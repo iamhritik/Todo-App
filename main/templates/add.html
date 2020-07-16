@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content%}
+<div class="row mt-4 ml-4">
+    <div class="alert alert-primary" role="alert">
+        {{ mesage }}
+    </div>
+    <form action="add_task" method="post" class="form-inline">
+        <label>Task Name </label>
+        <input type="text" name="task_h" class="form-control mb-2 mr-sm-2"  placeholder="Type here...">
+        <label>Task Description</label>
+        <input type="text" name="task_d" class="form-control mb-2 mr-sm-2" placeholder="Describe Task">
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    </form>
+</div>
+{% endblock %}

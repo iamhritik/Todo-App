@@ -5,7 +5,7 @@ from django.urls import path
 
 urlpatterns=[
 		path('',views.home, name='home'),
-    path('add_task', views.add_task),
+    path('add_task', views.add_task, name="add_task"),
     path('del_task/<int:num>/', views.del_task),
 
 	]
