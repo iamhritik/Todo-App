@@ -20,7 +20,14 @@
         </ul>
     </div>
     <div class="cols-md-6 ml-4">
-        <h3 style="font-family: monospace;">Completed Tasks</h3>
+        <h5 style="font-family: monospace;">Completed Tasks</h5><br>
+        <ul class="list-group">
+        {% for complete in completed %}
+            <li class="list-group-item" style="text-decoration:line-through;">
+                {{ complete.task_ch }}
+            </li>
+        {% endfor %}
+        </ul>
     </div>
 
 </div>

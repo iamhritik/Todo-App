@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.utils import timezone
-from main.models import todo_tasks, subtasks
+from main.models import todo_tasks, subtasks, completed_tasks
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def home(request):
+  completed = completed_tasks.objects.all().order_by('-id')
   tasks = todo_tasks.objects.all().order_by("-added_date")
-  return render(request,'index.html',{'tasks':tasks})
+  return render(request,'index.html',{'tasks':tasks, 'completed':completed})
 
 @csrf_exempt
 def add_task(request):
@@ -22,7 +23,10 @@ def add_task(request):
 
 @csrf_exempt
 def del_task(request, num):
-  todo_tasks.objects.get(id=num).delete()
+  mainone=todo_tasks.objects.get(id=num)
+  completed=completed_tasks.objects.create(task_ch=mainone.task_h,task_cd=mainone.task_d)
+  completed.save()
+  mainone.delete()
   return HttpResponseRedirect('/')
 
 @csrf_exempt
@@ -34,7 +38,7 @@ def subtask_del_task(request, num):
 def detail_tasks(request, num):
   tasks=todo_tasks.objects.get(id=num)
   subtask=subtasks.objects.filter(maintask_id=num)
-  subs = subtask.order_by('-id')
+  subs = subtasks.objects.filter(maintask_id=num).order_by('-id')
   if request.method == "POST":
     subname=request.POST["subtaskname"]
     if subtasks.objects.create(taskname=subname,maintask=tasks):
@@ -42,5 +46,6 @@ def detail_tasks(request, num):
   else:
     return render(request,'detail.html',{'tasks':tasks, 'subs':subs})
   
+
 
 

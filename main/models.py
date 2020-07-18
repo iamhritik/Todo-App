@@ -14,3 +14,9 @@ class subtasks(models.Model):
 	maintask=models.ForeignKey(todo_tasks, on_delete=models.CASCADE)
 	def __str__(self):
 		return self.taskname
+
+class completed_tasks(models.Model):
+	task_ch=models.CharField(max_length=200)
+	task_cd=models.CharField(max_length=400)
+	def __str__(self):
+		return self.task_ch
