@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block url%}
+<script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+{% endblock%}
+{% block content%}
+<div class="row mt-4 ml-4">
+    <div class="col-md-6">
+        <ul class="list-group">
+            <li class="list-group-item">{{ tasks.task_h }}
+                <div class="float-right">
+                    <form action="/del_task/{{tasks.id}}/" method="post" class="form-inline">
+                        <button type="submit" class="btn btn-sm btn-danger ml-2">
+                            <span class="glyphicon glyphicon-remove"></span> Remove
+                        </button>
+                    </form>
+                </div>
+            </li>
+
+             <li class="list-group-item">{{ tasks.task_d }}</li>
+        </ul>
+    </div>
+    <div class="cols-md-6 ml-4">
+        <form  method="post" class="form-inline">
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" name="subtaskname" class="form-control mb-2 mt-4 mr-sm-2"  placeholder="Subtask...">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-info btn-sm mt-3">Add</button>
+        </form>
+        <ul class="list-group">
+        	{% for sub in subs %}
+            <li class="list-group-item">
+                {{ sub.taskname }}
+                <div class="float-right">
+                <form action="/subtask_del_task/{{sub.id}}/" method="post" class="form-inline">
+                    <button type="submit" class="btn btn-sm btn-light ml-2">
+                            <ion-icon name="close-circle"></ion-icon>
+                    </button>
+                </form>
+            	</div>
+                
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+{% endblock%}
+
+

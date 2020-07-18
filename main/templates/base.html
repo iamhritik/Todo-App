@@ -1,15 +1,22 @@
+{% load static %}
 <html>
   <head>
     <title>ToDo App</title>
+    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+    {% block url%}
+    {% endblock %}
     <style>
+      {% block css %}
+      {% endblock %}
     </style>
   </head>
   <body>
     <nav class="navbar navbar-dark bg-dark">
       <a class="navbar-brand" href="#">To Do App</a>
-      <a class="navbar-item" href="{% url 'add_task' %}">Add Task</a>
-      <a class="navbar-item" href="{% url 'home' %}">Tasks</a>
+      <a class="navbar-item" href="{% url 'main:add_task' %}">Add Task</a>
+      <a class="navbar-item" href="{% url 'main:home' %}">Tasks</a>
     </nav>
     <div class="container-fluid">
     {% block content%}{% endblock %}

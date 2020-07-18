@@ -2,16 +2,28 @@
 {% load static %}
 {% block content%}
 <div class="row mt-4 ml-4">
-  <ul class="list-group">
-    {% for task in tasks %}
-    <li class="list-group-item">{{ task.task_h }}
-    <div class="float-right">
-    <form action="del_task/{{task.id}}/" method="post" class="form-inline">
-    <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
-    </form>
+    <div class="col-md-6">
+        <ul class="list-group">
+        {% for task in tasks %}
+        <a href="{% url 'main:detail_tasks' task.id %}" style="text-decoration:none;"> 
+            <li class="list-group-item">{{ task.task_h }}
+                <div class="float-right">
+                    <form action="del_task/{{task.id}}/" method="post" class="form-inline">
+                        <button type="submit" class="btn btn-sm btn-danger ml-2">
+                            <span class="glyphicon glyphicon-remove"></span> Remove
+                        </button>
+                    </form>
+                </div>
+            </li>
+        </a>
+        {% endfor%}
+        </ul>
     </div>
-    </li>
-    {% endfor%}
-  </ul>
+    <div class="cols-md-6 ml-4">
+        <h3 style="font-family: monospace;">Completed Tasks</h3>
+    </div>
+
 </div>
 {% endblock%}
+
+
