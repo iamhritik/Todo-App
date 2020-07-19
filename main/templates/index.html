@@ -4,12 +4,27 @@
 <div class="row mt-4 ml-4">
   <ul class="list-group">
     {% for task in tasks %}
-    <li class="list-group-item">{{ task.task_h }}
+    <li class="list-group-item">{{ task }}
     <div class="float-right">
-    <form action="del_task/{{task.id}}/" method="post" class="form-inline">
+    <form action="{% url 'del_task' task.id %}" method="post" class="form-inline">
     <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
     </form>
     </div>
+    <ul class="list-group">
+      {% for sub in task.sub_t.all %}
+        <li class="list-group-item">{{sub}}
+          <div class="float-right">
+            <form action="{% url 'del_sub' task.id sub.id %}" method="post" class="form-inline">
+            <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
+            </form>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    <form action="{% url 'add_sub' task.id %}" method="post" class="form-inline">
+      <input type="text" name="subtask" placeholder="Enter sub Tasks here">
+      <input type="submit" placeholder="Add">
+    </form>
     </li>
     {% endfor%}
   </ul>

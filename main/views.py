@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.utils import timezone
-from main.models import todo_tasks
+from main.models import todo_tasks, Main_t
+from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def home(request):
-  tasks = todo_tasks.objects.all().order_by("-added_date")
-  return render(request,'index.html',{'tasks':tasks})
+  tasks = Main_t.objects.all()
+  return render(request,'index.html',{'tasks': tasks})
 
 @csrf_exempt
 def add_task(request):
@@ -15,14 +16,34 @@ def add_task(request):
     task_h = request.POST["task_h"]
     task_d = request.POST["task_d"]
     content_add_time = timezone.now()
-    if todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time):
-      return HttpResponseRedirect('add_task')
+    sub_h = request.POST["sub_h"]
+    sub_d = request.POST["sub_d"]
+    task1 = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time)
+    task2 = todo_tasks.objects.create(task_h=sub_h, task_d=sub_d,added_date=content_add_time)
+    main_t = Main_t.objects.create(main_t=task1)
+    main_t.sub_t.add(task2)
+    return HttpResponseRedirect('add_task')
   else:
-    return render(request, "add.html")
+    return render(request, 'add.html')
 
 @csrf_exempt
-def del_task(request, num):
-  todo_tasks.objects.get(id=num).delete()
-  return HttpResponseRedirect('/')
+def add_sub(request, num):
+  if request.method == "POST":
+    task = todo_tasks.objects.create(task_h=request.POST["subtask"],task_d="",added_date=timezone.now())
+    maint = Main_t.objects.get(id=num)
+    maint.sub_t.add(task)
+    return HttpResponseRedirect(reverse("home"))
 
 
+@csrf_exempt
+def del_task(request, id):
+  main_task = Main_t.objects.get(id=id)
+  main_task.sub_t.all().delete()
+  todo_tasks.objects.get(task_h=main_task).delete()
+  return HttpResponseRedirect(reverse("home"))
+
+@csrf_exempt
+def del_sub(request, num1, num2):
+  maint = Main_t.objects.get(id=num1)
+  maint.sub_t.get(id=num2).delete()
+  return HttpResponseRedirect(reverse("home"))
