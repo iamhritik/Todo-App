@@ -34,7 +34,7 @@
             <li class="list-group-item">
                 {{ sub.taskname }}
                 <div class="float-right">
-                <form action="/subtask_del_task/{{sub.id}}/" method="post" class="form-inline">
+                <form action="/subtask_del_task/{{sub.id}}/{{ tasks.id }}" method="post" class="form-inline">
                     <button type="submit" class="btn btn-sm btn-light ml-2">
                             <ion-icon name="close-circle"></ion-icon>
                     </button>

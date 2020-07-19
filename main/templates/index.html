@@ -20,11 +20,11 @@
         </ul>
     </div>
     <div class="cols-md-6 ml-4">
-        <h5 style="font-family: monospace;">Completed Tasks</h5><br>
+        <h5 style="font-family: monospace;color:#097C25;">Completed Tasks</h5><br>
         <ul class="list-group">
         {% for complete in completed %}
             <li class="list-group-item" style="text-decoration:line-through;">
-                {{ complete.task_ch }}
+                <div style="color:#253746;">{{ complete.task_ch }}</div>
             </li>
         {% endfor %}
         </ul>

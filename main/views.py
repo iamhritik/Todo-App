@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.utils import timezone
 from main.models import todo_tasks, subtasks, completed_tasks
 from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
@@ -30,9 +31,10 @@ def del_task(request, num):
   return HttpResponseRedirect('/')
 
 @csrf_exempt
-def subtask_del_task(request, num):
+def subtask_del_task(request, num, mum):
   subtasks.objects.get(id=num).delete()
-  return HttpResponseRedirect('/')
+  a=str(mum)
+  return HttpResponseRedirect('/task_detail/'+a)
 
 @csrf_exempt
 def detail_tasks(request, num):
