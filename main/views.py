@@ -23,10 +23,16 @@ def add_task(request):
     return render(request, "add.html")
 
 @csrf_exempt
-def del_task(request, num):
+def compl_task(request, num):
   mainone=todo_tasks.objects.get(id=num)
   completed=completed_tasks.objects.create(task_ch=mainone.task_h,task_cd=mainone.task_d)
   completed.save()
+  mainone.delete()
+  return HttpResponseRedirect('/')
+
+@csrf_exempt
+def del_task(request, num):
+  mainone=todo_tasks.objects.get(id=num)
   mainone.delete()
   return HttpResponseRedirect('/')
 
@@ -48,6 +54,7 @@ def detail_tasks(request, num):
   else:
     return render(request,'detail.html',{'tasks':tasks, 'subs':subs})
   
+
 
 
 

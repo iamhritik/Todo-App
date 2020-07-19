@@ -1,19 +1,23 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block css%}
+#icon-compl{height:2em;width:2em;font-size:1.6em;color:#63A869;}
+{% endblock%}
 {% block content%}
 <div class="row mt-4 ml-4">
-    <div class="col-md-6">
+    <div class="col-md-6 mt-4">
         <ul class="list-group">
         {% for task in tasks %}
         <a href="{% url 'main:detail_tasks' task.id %}" style="text-decoration:none;"> 
-            <li class="list-group-item">{{ task.task_h }}
+            <li class="list-group-item mb-2">{{ task.task_h }}
                 <div class="float-right">
-                    <form action="del_task/{{task.id}}/" method="post" class="form-inline">
-                        <button type="submit" class="btn btn-sm btn-danger ml-2">
-                            <span class="glyphicon glyphicon-remove"></span> Remove
+                    <form action="compl_task/{{task.id}}/" method="post" class="form-inline">
+                        <button type="submit" class="btn btn-sm btn-light ml-2 mt-0">
+                            <ion-icon name="checkmark-circle-sharp" id="icon-compl"></ion-icon>
                         </button>
                     </form>
                 </div>
+                <br><br>
             </li>
         </a>
         {% endfor%}
@@ -24,7 +28,7 @@
         <ul class="list-group">
         {% for complete in completed %}
             <li class="list-group-item" style="text-decoration:line-through;">
-                <div style="color:#253746;">{{ complete.task_ch }}</div>
+                <div style="color:#3B4B6B;">{{ complete.task_ch }}</div>
             </li>
         {% endfor %}
         </ul>

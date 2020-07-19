@@ -3,15 +3,25 @@
 {% block url%}
 <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
 {% endblock%}
+{% block css%}
+#task-head{font-family:monospace;color:#0E0F16;font-weight:600;font-size:1.6em;}
+#add-sub{height:2em;width:2em;font-size:1.6em;color:#569F5C;}
+#icon-del{height:2em;width:2em;font-size:1.6em;color:#F44336;}
+{% endblock%}
+
+
+
+
 {% block content%}
 <div class="row mt-4 ml-4">
     <div class="col-md-6 mt-4">
         <ul class="list-group">
-            <li class="list-group-item">{{ tasks.task_h }}
+            <li class="list-group-item">
+                <h4 id="task-head">{{ tasks.task_h }}</h4>
                 <div class="float-right">
                     <form action="/del_task/{{tasks.id}}/" method="post" class="form-inline">
-                        <button type="submit" class="btn btn-sm btn-danger ml-2">
-                            <span class="glyphicon glyphicon-remove"></span> Remove
+                        <button type="submit" class="btn btn-sm btn-light ml-2">
+                            <ion-icon name="close-circle-sharp" id="icon-del"></ion-icon>
                         </button>
                     </form>
                 </div>
@@ -27,7 +37,9 @@
                     <input type="text" name="subtaskname" class="form-control mb-2 mt-4 mr-sm-2"  placeholder="Subtask...">
                 </div>
             </div>
-            <button type="submit" class="btn btn-info btn-sm mt-3">Add</button>
+            <button type="submit" class="btn btn-sm mt-3">
+                <ion-icon name="add-circle" id="add-sub"></ion-icon>
+            </button>
         </form>
         <ul class="list-group">
         	{% for sub in subs %}
