@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from django.utils import timezone
-from main.models import todo_tasks, subtasks, completed_tasks
+from main.models import todo_tasks, subtasks
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def home(request):
-  completed = completed_tasks.objects.all().order_by('-id')
-  tasks = todo_tasks.objects.all().order_by("-added_date")
+  tasks = todo_tasks.objects.filter(task_type="True").order_by("-added_date")
+  completed=todo_tasks.objects.filter(task_type="False").order_by("-added_date")
   return render(request,'index.html',{'tasks':tasks, 'completed':completed})
 
 @csrf_exempt
@@ -17,17 +17,16 @@ def add_task(request):
     task_h = request.POST["task_h"]
     task_d = request.POST["task_d"]
     content_add_time = timezone.now()
-    if todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time):
+    if todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time,task_type=True):
       return HttpResponseRedirect('add_task')
   else:
     return render(request, "add.html")
 
 @csrf_exempt
 def compl_task(request, num):
-  mainone=todo_tasks.objects.get(id=num)
-  completed=completed_tasks.objects.create(task_ch=mainone.task_h,task_cd=mainone.task_d)
-  completed.save()
-  mainone.delete()
+  taskc=todo_tasks.objects.get(id=num)
+  taskc.task_type=False
+  taskc.save()
   return HttpResponseRedirect('/')
 
 @csrf_exempt
