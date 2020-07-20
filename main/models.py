@@ -11,7 +11,8 @@ class todo_tasks(models.Model):
   	return self.task_h
 
 class subtasks(models.Model):
-	taskname=models.CharField(max_length=100)
-	maintask=models.ForeignKey(todo_tasks, on_delete=models.CASCADE)
-	def __str__(self):
-		return self.taskname
+  taskname=models.CharField(max_length=100)
+  maintask=models.ForeignKey(todo_tasks, on_delete=models.CASCADE)
+  subtask_type=models.BooleanField(default=True)
+  def __str__(self):
+    return self.taskname

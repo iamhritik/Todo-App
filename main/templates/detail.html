@@ -14,7 +14,7 @@
 
 {% block content%}
 <div class="row mt-4 ml-4">
-    <div class="col-md-6 mt-4">
+    <div class="col-md-5 mt-4">
         <ul class="list-group">
             <li class="list-group-item">
                 <h4 id="task-head">{{ tasks.task_h }}</h4>
@@ -30,7 +30,7 @@
              <li class="list-group-item">{{ tasks.task_d }}</li>
         </ul>
     </div>
-    <div class="cols-md-6 ml-4">
+    <div class="cols-md-3 ml-4">
         <form  method="post" class="form-inline">
             <div class="form-row">
                 <div class="form-group col-md-12">
@@ -56,6 +56,16 @@
             </li>
             {% endfor %}
         </ul>
+    </div>
+    <div class="cols-md-3 ml-4">
+        <ul class="list-group">
+            {% for subcompleted in subc %}
+            <li class="list-group-item">
+                <p style="color:#04AF52;font-size:0.9em;text-decoration:line-through;">{{ subcompleted.taskname }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+
     </div>
 
 </div>
