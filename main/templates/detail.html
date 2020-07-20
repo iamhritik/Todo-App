@@ -42,7 +42,7 @@
             </button>
         </form>
         <ul class="list-group">
-        	{% for sub in subs %}
+        	{% for sub in subtask %}
             <li class="list-group-item">
                 {{ sub.taskname }}
                 <div class="float-right">
@@ -59,7 +59,7 @@
     </div>
     <div class="cols-md-3 ml-4">
         <ul class="list-group">
-            {% for subcompleted in subc %}
+            {% for subcompleted in subtaskc %}
             <li class="list-group-item">
                 <p style="color:#04AF52;font-size:0.9em;text-decoration:line-through;">{{ subcompleted.taskname }}</p>
             </li>

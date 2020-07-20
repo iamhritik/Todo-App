@@ -46,31 +46,21 @@ def subtask_del_task(request, num, mum):
 @csrf_exempt
 def detail_tasks(request, num):
   tasks=todo_tasks.objects.get(id=num)
-  subtask=subtasks.objects.filter(maintask_id=num)
-  subs = subtasks.objects.filter(maintask_id=num, subtask_type="True").order_by('-id')
-  maincount=subtasks.objects.filter(maintask_id=num).count()
-  subc=subtasks.objects.filter(maintask_id=num, subtask_type="False")
-  subcount=subc.count()
-  if(maincount==0):
-      if request.method == "POST":
-        subname=request.POST["subtaskname"]
-        if subtasks.objects.create(taskname=subname,maintask=tasks,subtask_type=True):
-          return render(request,'detail.html',{'tasks':tasks, 'subs':subs, 'subc':subc})
-      else:
-        return render(request,'detail.html',{'tasks':tasks, 'subs':subs, 'subc':subc})
+  subtask=subtasks.objects.filter(maintask_id=num, subtask_type="True").order_by('-id')
+  totalsubtasks=subtasks.objects.filter(maintask_id=num).count()
+  subtaskc=subtasks.objects.filter(maintask_id=num, subtask_type="False")
+  if(totalsubtasks==subtaskc.count() and totalsubtasks>0):
+    changer=todo_tasks.objects.get(id=num)
+    changer.task_type=False
+    changer.save()
+    return HttpResponseRedirect('/')
   else:
-    if(maincount==subcount):
-      changer=todo_tasks.objects.get(id=num)
-      changer.task_type=False
-      changer.save()
-      return HttpResponseRedirect('/')
+    if request.method == "POST":
+      subname=request.POST["subtaskname"]
+      if subtasks.objects.create(taskname=subname,maintask=tasks,subtask_type=True):
+        return HttpResponseRedirect('/task_detail/'+str(num))
     else:
-      if request.method == "POST":
-        subname=request.POST["subtaskname"]
-        if subtasks.objects.create(taskname=subname,maintask=tasks,subtask_type=True):
-          return render(request,'detail.html',{'tasks':tasks, 'subs':subs, 'subc':subc})
-      else:
-        return render(request,'detail.html',{'tasks':tasks, 'subs':subs, 'subc':subc})
+      return render(request,'detail.html',{'tasks':tasks, 'subtask':subtask, 'subtaskc':subtaskc})
   
 
 
