@@ -7,7 +7,7 @@ class todo_tasks(models.Model):
   task_d = models.CharField(max_length=400, blank=True, null=True)
   added_date=models.DateTimeField()
   end_date = models.DateTimeField(null=True)
-  complete = models.BooleanField(default=False)
+  complete = models.BooleanField()
   def __str__(self):
   	return f"{self.task_h}"
 

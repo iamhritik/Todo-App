@@ -26,7 +26,7 @@ def add_task(request):
 @csrf_exempt
 def add_sub(request, num):
   if request.method == "POST":
-    task = todo_tasks.objects.create(task_h=request.POST["subtask"],added_date=timezone.now())
+    task = todo_tasks.objects.create(task_h=request.POST["subtask"],added_date=timezone.now(),complete=False)
     maint = Main_t.objects.get(id=num)
     maint.sub_t.add(task)
     return HttpResponseRedirect(reverse("home"))
@@ -50,17 +50,15 @@ def complete(request, mainid, subid):
   if request.method == "POST":
     maint = Main_t.objects.get(id=mainid)
     subt = maint.sub_t.get(id=subid)
-    if request.POST["complete_var"].ischecked():
+    if request.POST["complete_var"]=="True":
       subt.complete = True
-    complete_var = False
-    for subs in maint.subt.all():
-      if subs.complete == True:
-        complete_var = True
-      else :
-        complete_var = False
-        break
-    if complete_var == True:
-      maint.main_t.complete = True
+      subt.save()
+      if maint.sub_t.filter(complete=False).count() == 0:
+        maint.main_t.complete = True
+        maint.main_t.save()
+        return HttpResponseRedirect(reverse('home'))
+    return HttpResponseRedirect(reverse('home'))
+      
     
     
 
