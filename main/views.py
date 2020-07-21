@@ -44,7 +44,7 @@ def del_task(request, id):
 def del_sub(request, num1, num2):
   maint = Main_t.objects.get(id=num1)
   maint.sub_t.get(id=num2).delete()
-  main_t.save()
+  maint.save()
   return HttpResponseRedirect(reverse("home"))
 
 @csrf_exempt
