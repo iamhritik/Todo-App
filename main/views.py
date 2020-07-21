@@ -16,12 +16,9 @@ def add_task(request):
     task_h = request.POST["task_h"]
     task_d = request.POST["task_d"]
     content_add_time = timezone.now()
-    sub_h = request.POST["sub_h"]
-    sub_d = request.POST["sub_d"]
-    task1 = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time)
-    task2 = todo_tasks.objects.create(task_h=sub_h, task_d=sub_d,added_date=content_add_time)
-    main_t = Main_t.objects.create(main_t=task1)
-    main_t.sub_t.add(task2)
+    end_date = request.POST["task_end_date"]
+    task1 = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time,end_date=end_date,complete=False)
+    Main_t.objects.create(main_t=task1)
     return HttpResponseRedirect('add_task')
   else:
     return render(request, 'add.html')
@@ -29,7 +26,7 @@ def add_task(request):
 @csrf_exempt
 def add_sub(request, num):
   if request.method == "POST":
-    task = todo_tasks.objects.create(task_h=request.POST["subtask"],task_d="",added_date=timezone.now())
+    task = todo_tasks.objects.create(task_h=request.POST["subtask"],added_date=timezone.now())
     maint = Main_t.objects.get(id=num)
     maint.sub_t.add(task)
     return HttpResponseRedirect(reverse("home"))
@@ -47,3 +44,23 @@ def del_sub(request, num1, num2):
   maint = Main_t.objects.get(id=num1)
   maint.sub_t.get(id=num2).delete()
   return HttpResponseRedirect(reverse("home"))
+
+@csrf_exempt
+def complete(request, mainid, subid):
+  if request.method == "POST":
+    maint = Main_t.objects.get(id=mainid)
+    subt = maint.sub_t.get(id=subid)
+    if request.POST["complete_var"].ischecked():
+      subt.complete = True
+    complete_var = False
+    for subs in maint.subt.all():
+      if subs.complete == True:
+        complete_var = True
+      else :
+        complete_var = False
+        break
+    if complete_var == True:
+      maint.main_t.complete = True
+    
+    
+
