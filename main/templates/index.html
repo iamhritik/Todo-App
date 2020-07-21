@@ -11,8 +11,9 @@
               <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
             </form>
           </div>
+          <span class="badge badge-secondary">{{ task.main_t.end_date }}</span>
       </li>
-      {% else %}
+      {% elif task.main_t.end_date < time and not task.main_t.complete %}
       <li class="list-group-item" style="background-color: #FA8268;">{{ task }}
         <div class="float-right">
         <form action="{% url 'del_task' task.id %}" method="post" class="form-inline">
@@ -52,9 +53,51 @@
           <input type="text" name="subtask" placeholder="Enter sub Tasks here">
           <input type="submit" placeholder="Add">
         </form>
-        </li>
+        <span class="badge badge-secondary">{{ task.main_t.end_date }}</span>
+      </li>
+      {% else %}
+      <li class="list-group-item" style="background-color: #65BBF3">{{ task }}
+        <div class="float-right">
+        <form action="{% url 'del_task' task.id %}" method="post" class="form-inline">
+        <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
+        </form>
+        </div>
+        <ul class="list-group">
+          {% for sub in task.sub_t.all %}
+          {% if sub.complete %}
+          <li class="list-group-item">{{sub}}-Complete
+            <div class="float-right">
+              <form action="{% url 'del_sub' task.id sub.id %}" method="post" class="form-inline">
+              <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
+              </form>
+            </div>
+          </li>
+          {% else %}
+            <li class="list-group-item">
+              <form action="{% url 'complete' task.id sub.id %}" method="POST">
+              <button type="submit" id="radiosubmit" ><input type="radio" name="complete_var" onclick="butclick()" value="True"></button>
+              </form>{{sub}}
+              <script>
+                function butclick(){
+                  document.getElementById("radiosubmit").click();
+                }
+              </script>
+              <div class="float-right">
+                <form action="{% url 'del_sub' task.id sub.id %}" method="post" class="form-inline">
+                <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
+                </form>
+              </div>
+            </li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+        <form action="{% url 'add_sub' task.id %}" method="post" class="form-inline">
+          <input type="text" name="subtask" placeholder="Enter sub Tasks here">
+          <input type="submit" placeholder="Add">
+        </form>
+        <span class="badge badge-secondary">{{ task.main_t.end_date }}</span>
+      </li>
       {% endif %}
-    
     {% endfor%}
   </ul>
 </div>

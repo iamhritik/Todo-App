@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 def home(request):
   tasks = Main_t.objects.all()
-  return render(request,'index.html',{'tasks': tasks})
+  return render(request,'index.html',{'tasks': tasks, 'time' : timezone.now()})
 
 @csrf_exempt
 def add_task(request):
@@ -36,6 +36,7 @@ def add_sub(request, num):
 def del_task(request, id):
   main_task = Main_t.objects.get(id=id)
   main_task.sub_t.all().delete()
+  main_task.save()
   todo_tasks.objects.get(task_h=main_task).delete()
   return HttpResponseRedirect(reverse("home"))
 
@@ -43,6 +44,7 @@ def del_task(request, id):
 def del_sub(request, num1, num2):
   maint = Main_t.objects.get(id=num1)
   maint.sub_t.get(id=num2).delete()
+  main_t.save()
   return HttpResponseRedirect(reverse("home"))
 
 @csrf_exempt
