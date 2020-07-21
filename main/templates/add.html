@@ -11,10 +11,18 @@
                 <textarea type="text" name="task_d" class="form-control form-control-sm mr-sm-4" placeholder="Describe Task" rows="6"></textarea><br/>
             </div>
             <div class="form-group col-md-12">
-                <input type="datetime" name="task_end_date">
+                <input name="task_end_date" id="datepicker">
             </div>
       </div>
         <button type="submit" class="btn btn-primary ">Submit</button>
     </form>
+    <script>
+    $(function () {
+      $("#datepicker").datepicker({
+        format:'YYYY-MM-DD',
+      }
+        );
+    });
+    </script>
 </div>
 {% endblock %}
