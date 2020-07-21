@@ -34,6 +34,11 @@
               <form action="{% url 'complete' task.id sub.id %}" method="POST">
               <button type="submit" id="radiosubmit" ><input type="radio" name="complete_var" onclick="butclick()" value="True"></button>
               </form>{{sub}}
+              <script>
+                function butclick(){
+                  document.getElementById("radiosubmit").click();
+                }
+              </script>
               <div class="float-right">
                 <form action="{% url 'del_sub' task.id sub.id %}" method="post" class="form-inline">
                 <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
