@@ -58,13 +58,13 @@ def complete(request, mainid, subid):
       subt.complete = True
       subt.save()
       if maint.sub_t.filter(complete=False).count() == 0:
-        sm(subject = 'Task Completed !!! ',message = maint.main_t.task_d,from_email = 'ToDo-App <shahiblogs@gmail.com>',recipient_list = ['hritik.99@outlook.com','cocdrive89@gmail.com',],fail_silently=False,)
         maint.main_t.complete = True
         maint.main_t.save()
+        sendmail(mainid)
         return HttpResponseRedirect(reverse('home'))
-    return HttpResponseRedirect(reverse('home'))
-
-      
+    return HttpResponseRedirect(reverse('home')) 
     
-    
+def sendmail(mainid):
+  maint=Main_t.objects.get(id=mainid)
+  sm(subject = 'Task Completed !!! ',message = maint.main_t.task_d,from_email = 'ToDo-App <shahiblogs@gmail.com>',recipient_list = ['hritik.99@outlook.com',],fail_silently=False,)
 
