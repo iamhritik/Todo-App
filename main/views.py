@@ -4,6 +4,8 @@ from main.models import todo_tasks, Main_t
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail as sm
+from datetime import datetime, timedelta
 
 # Create your views here.
 def home(request):
@@ -61,10 +63,12 @@ def complete(request, mainid, subid):
       subt.complete = True
       subt.save()
       if maint.sub_t.filter(complete=False).count() == 0:
+        sm(subject = 'Task Completed !!! ',message = maint.main_t.task_d,from_email = 'ToDo-App <shahiblogs@gmail.com>',recipient_list = ['hritik.99@outlook.com','cocdrive89@gmail.com',],fail_silently=False,)
         maint.main_t.complete = True
         maint.main_t.save()
         return HttpResponseRedirect(reverse('home'))
     return HttpResponseRedirect(reverse('home'))
+
       
     
     
