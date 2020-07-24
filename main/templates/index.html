@@ -75,12 +75,12 @@
           {% else %}
             <li class="list-group-item">
               <form action="{% url 'complete' task.id sub.id %}" method="POST">
-              <button type="submit" id="radiosubmit" ><input type="radio" name="complete_var" onclick="butclick()" value="True"></button>
+              <button type="submit" id="{{sub.id}}"><input type="radio" name="complete_var" onclick="butclick()" value="True"></button>
               </form>{{sub}}
               <script>
-                function butclick(){
-                  document.getElementById("radiosubmit").click();
-                }
+                  function butclick(){
+                    document.querySelector('#{{sub.id}}').click();
+                  };
               </script>
               <div class="float-right">
                 <form action="{% url 'del_sub' task.id sub.id %}" method="post" class="form-inline">
