@@ -2,21 +2,20 @@ from django.db import models
 from django.utils import timezone
 # Create your models here.
 
-class todo_tasks(models.Model):
-  task_h=models.CharField(max_length=200, unique=True, null=True)
-  task_d = models.CharField(max_length=400, blank=True, null=True)
+class maintasks(models.Model):
+  task_name=models.CharField(max_length=200,blank=True,null=True)
+  task_detail = models.CharField(max_length=400,blank=True,null=True)
   added_date=models.DateTimeField()
   end_date = models.DateTimeField(null=True)
   complete = models.BooleanField()
+  emailid = models.CharField(max_length=20,null=True)
   def __str__(self):
-  	return f"{self.task_h}"
+  	return self.task_detail
 
-class Main_t(models.Model):
-  main_t = models.ForeignKey(todo_tasks, on_delete=models.CASCADE, related_name="maintask")
-  sub_t = models.ManyToManyField(todo_tasks, blank=True, related_name="subtask")
+class subtasks(models.Model):
+  subtask=models.CharField(max_length=30,null=True)
+  parenttask = models.ForeignKey(maintasks, on_delete=models.CASCADE)
+  subtask_status=models.BooleanField()
+  def __self__(self):
+    return self.subtask
 
-  def main_task(self):
-    return f"{self.main_t}"
-
-  def __str__(self):
-    return f"{self.main_t}"

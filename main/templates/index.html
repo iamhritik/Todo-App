@@ -1,117 +1,69 @@
 {% extends 'base.html' %}
 {% load static %}
 {%block css%}
-#leftbar{background-color:#292E33;height:9em;width:3em;border-radius:15px;margin-top:12em;margin-left:-0.5em;padding-left:0.7em;padding-top:1.5em;}
-ion-icon{color:#4567D9;width:1.6em;height:1.6em;}
-{% endblock%}
+    html,body{height:100%;}
+    ion-icon{width:2em;height:2em;}
+    .optionbar{height:100%;background-color:#2d2d31;height:35em;padding-top:1em;padding-left:1em!important;padding-right:1.5em;}
+    #options{height:2em;width:auto;background-color:#2C2C320;margin-top:0.5em;padding:1em;}
+    #links{color:#BCBCC2;text-decoration:none;font-family:ubuntu;font-size:0.9em;}
+
+    .main{postion:fixed;height:10em;padding-left:2em;padding-top:2em;}
+    #date{font-family:'Montserrat', sans-serif;color:#212631;margin-top:0.6em;margin-left:1em;margin-bottom:1em;}
+    #tasks{height:3.5em;padding:0.8em;background:#d8e3eb;font-family:Ubuntu;margin-top:0.3em;}
+    #deletebutton{border:none;background:none;}
+
+    .completed{margin-top:2em;}
+    #completetask{height:3.5em;padding:0.8em;background:#97b98f;font-family:Ubuntu;margin-top:0.3em;}
+{%endblock%}
 {% block content%}
   <div class="row">
-    <div class="col-sm-1">
-      <div id="leftbar">
-        <a href="{% url 'add_task' %}"><ion-icon name="duplicate"></ion-icon></a>
-        <a href=""><ion-icon name="checkmark-done-circle"></ion-icon></a>
-        <a href="#"><ion-icon name="cellular"></ion-icon></a>
-
-      </div>
-
-    </div>
-    <div class="col-sm-5">
-      <ul class="list-group">
-    {% for task in tasks %}
-      {% if task.main_t.complete %}
-      <li class="list-group-item" style="background-color:lightgreen">{{ task }}
-          <div class="float-right">
-            <form action="{% url 'del_task' task.id %}" method="post" class="form-inline">
-              <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
-            </form>
-          </div>
-          <span class="badge badge-secondary">{{ task.main_t.end_date }}</span>
-      </li>
-      {% elif task.main_t.end_date < time and not task.main_t.complete %}
-      <li class="list-group-item" style="background-color: #FA8268;">{{ task }}
-        <div class="float-right">
-        <form action="{% url 'del_task' task.id %}" method="post" class="form-inline">
-        <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
-        </form>
+    <div class="col-sm-2 optionbar">
+        <div id="options">
+            <a href="/" id="links">Home</a>
         </div>
-        <ul class="list-group">
-          {% for sub in task.sub_t.all %}
-          {% if sub.complete %}
-          <li class="list-group-item">{{sub}}-Complete
-            <div class="float-right">
-              <form action="{% url 'del_sub' task.id sub.id %}" method="post" class="form-inline">
-              <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
-              </form>
-            </div>
-          </li>
-          {% else %}
-            <li class="list-group-item">
-              <form action="{% url 'complete' task.id sub.id %}" method="POST">
-              <button type="submit"><input type="radio" value="True"></button>
-              </form>{{sub}}
-              <div class="float-right">
-                <form action="{% url 'del_sub' task.id sub.id %}" method="post" class="form-inline">
-                <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
-                </form>
-              </div>
-            </li>
-          {% endif %}
-          {% endfor %}
-        </ul>
-        <form action="{% url 'add_sub' task.id %}" method="post" class="form-inline">
-          <input type="text" name="subtask" placeholder="Enter sub Tasks here">
-          <input type="submit" placeholder="Add">
-        </form>
-        <span class="badge badge-secondary">{{ task.main_t.end_date }}</span>
-      </li>
-      {% else %}
-      <li class="list-group-item" style="background-color: #65BBF3">{{ task }}
-        <div class="float-right">
-        <form action="{% url 'del_task' task.id %}" method="post" class="form-inline">
-        <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
-        </form>
+        <div id="options">
+            <a href="{% url 'taskadd' %}" id="links">Add Task</a>
         </div>
-        <ul class="list-group">
-          {% for sub in task.sub_t.all %}
-          {% if sub.complete %}
-          <li class="list-group-item">{{sub}}-Complete
-            <div class="float-right">
-              <form action="{% url 'del_sub' task.id sub.id %}" method="post" class="form-inline">
-              <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
-              </form>
-            </div>
-          </li>
-          {% else %}
-            <li class="list-group-item">
-              <form action="{% url 'complete' task.id sub.id %}" method="POST">
-              <button type="submit" id="radiosubmit" ><input type="radio" name="complete_var" onclick="butclick()" value="True"></button>
-              </form>{{sub}}
-              <script>
-                function butclick(){
-                  document.getElementById("radiosubmit").click();
-                }
-              </script>
-              <div class="float-right">
-                <form action="{% url 'del_sub' task.id sub.id %}" method="post" class="form-inline">
-                <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
-                </form>
-              </div>
-            </li>
-          {% endif %}
-          {% endfor %}
-        </ul>
-        <form action="{% url 'add_sub' task.id %}" method="post" class="form-inline">
-          <input type="text" name="subtask" placeholder="Enter sub Tasks here">
-          <input type="submit" placeholder="Add">
-        </form>
-        <span class="badge badge-secondary">{{ task.main_t.end_date }}</span>
-      </li>
-      {% endif %}
-    {% endfor%}
-  </ul>
+        <div id="options">
+            <a href="#" id="links">Performance</a>
+        </div>
     </div>
-    <div class="col-sm-6">
 
+<!--right side starts here-->
+    <div class="col-sm-6 main">
+      <h3 id="date">{{ time|date }}</h3>
+      {% for tasks in tasks %}
+        {% if not tasks.complete %}
+        <div id="tasks">
+          <a href="{% url 'taskdetail' tasks.id%}" style="text-decoration: none;color:#22272F;">
+            {{ tasks.task_name }}
+          </a>
+            <div class="float-right">
+                <form action="{% url 'taskdelete' tasks.id %}" method="post" class="form-inline">
+                <button type="submit" id="deletebutton">
+                  <ion-icon name="trash"></ion-icon>
+                </button>
+                </form>
+            </div>
+        </div>
+        {% endif%}
+      {% endfor %}
+    </div>
+    <div class="col-sm-4 completed">
+      {% for tasks in tasks %}
+        {% if tasks.complete %}
+        <div id="completetask">
+            {{ tasks.task_name}}
+            <div class="float-right">
+                <form action="{% url 'taskdelete' tasks.id %}" method="post" class="form-inline">
+                <button type="submit" id="deletebutton">
+                  <ion-icon name="thumbs-up"></ion-icon>
+                </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+      {% endfor %}       
     </div>
   </div>
 {% endblock%}
