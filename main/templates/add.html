@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+<style>
+{%block css%}
+body{background-color:#111111;}
+#leftbar{background-color:#292E33;height:9em;width:3em;border-radius:15px;margin-top:12em;margin-left:-0.5em;padding-left:0.7em;padding-top:1.5em;}
+ion-icon{color:#007BFF;width:1.6em;height:1.6em;}
+
+.addtask{height:32em;background-color:#202128;border-radius:2%;margin-top:2em;}
+#task_h{background-color:#121317;border:none;color:#DADBE1;}
+#task_d{background-color:#121317;border:none;color:#DADBE1;}
+#datepicker{background-color:#121317;border:none;color:#DADBE1; }
+#button-submit{border:none;background-color: #165EC0;padding:0.2em;height:2.5em;width:7em;font-size:0.9em;color: #E0E0E0;}
+{% endblock%}
+</style>
+{% block content%}
+<div class="row">
+    <div class="col-sm-1">
+        <div id="leftbar">
+            <a href="{% url 'add_task' %}"><ion-icon name="duplicate"></ion-icon></a>
+            <a href="{% url 'home' %}"><ion-icon name="checkmark-done-circle"></ion-icon></a>
+            <a href="#"><ion-icon name="cellular"></ion-icon></a>
+        </div>
+    </div>
+    <div class="col-sm-5 addtask">
+        <form action="add_task" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <input type="text" name="task_h" class="form-control mb-2 mt-4 mr-sm-2"  placeholder="Task Name..." id="task_h">
+                </div>
+                <div class="form-group col-md-12">
+                    <textarea type="text" name="task_d" class="form-control form-control-sm mr-sm-4" placeholder="Describe Task" rows="8" id="task_d"></textarea><br/>
+                </div>
+                <div class="form-group col-md-12">
+                    <input name="task_end_date" id="datepicker" placeholder="Choose End Date...">
+                </div>
+            </div>
+            <button type="submit" id="button-submit">Add Task</button>
+    </form>
+    </div>
+    <div class="col-sm-6">
+
+    </div>
+  </div>
+<script>
+    $(function () {
+      $("#datepicker").datepicker({
+        format:'YYYY-MM-DD',
+      }
+        );
+    });
+</script>
+{% endblock %}
