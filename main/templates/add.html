@@ -6,6 +6,11 @@
     .optionbar{height:100%;background-color:#2d2d31;height:35em;padding-top:1em;padding-left:1em!important;padding-right:1.5em;}
     #options{height:2em;width:auto;background-color:#2C2C320;margin-top:0.5em;border-radius:0.4em;padding-top:0.4em;padding-left:1em;padding-right:1em;}
     #links{color:#BCBCC2;text-decoration:none;font-family:ubuntu;font-size:0.9em;}
+
+    .addtask{background-color:#eeeded;}
+    #formdiv{margin-top:5em;height:26em;width:30em;background:#ffffff;padding:2.4em;text-align:left;border-radius:0.5em;border-top:solid 4px #0196a7;}
+
+    #button-submit{background:#ef2222;border:none;padding:0.4em;color:white;margin-top:0.6em;height:2.4em;width:8em;border-radius:1em;font-size:0.9em;font-family:'Montserrat',sans-serif;}
 {%endblock%}
 {% block content%}
   <div class="row">
@@ -27,25 +32,26 @@
             </a>
         </div>
     </div>
-    <div class="col-sm-5 addtask">
-        <form action="taskadd" method="post">
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <input type="text" name="taskname" class="form-control mb-2 mt-4 mr-sm-2"  placeholder="Task Name..." id="taskname" maxlength="50">
-                </div>
-                <div class="form-group col-md-12">
-                    <textarea type="text" name="taskdetail" class="form-control form-control-sm mr-sm-4" placeholder="Describe Task" rows="8" id="taskdetail" maxlength="150"></textarea><br/>
-                </div>
-                <div class="form-group col-md-12">
-                    <input name="enddate" id="datepicker" placeholder="Choose End Date...">
-                </div>
-            </div>
-            <button type="submit" id="button-submit">Add Task</button>
-        </form>
-    
-    </div>
-    <div class="col-sm-5">
-
+    <div class="col-sm-10 addtask">
+        <center>
+        <div id="formdiv">
+            <form action="taskadd" method="post">
+                  <div class="form-group">
+                    <label for="formGroupExampleInput" style="font-size:0.86em;color:#303135;font-family:'Montserrat',sans-serif;">Task name</label>
+                    <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Task Name..." name="taskname" style="font-size:0.86em;color:#3d3c3c;font-family:'Montserrat',sans-serif;">
+                  </div>
+                  <div class="form-group">
+                    <label for="formGroupExampleInput2" style="font-size:0.86em;color:#303135;font-family:'Montserrat',sans-serif;">About task</label>
+                  <textarea class="form-control" name="taskdetail" rows="2"  placeholder="Describe your Task" style="font-size:0.86em;color:#585858;font-family:'Montserrat',sans-serif;"></textarea> 
+                  </div>
+                    <div class="form-group">
+                        <label for="inputZip" style="font-size:0.86em;color:#303135;font-family:'Montserrat',sans-serif;" >End Date</label>
+                        <input type="text" class="form-control" id="datepicker" name="enddate" placeholder="Add date" style="font-size:0.86em;color:#585858;font-family:'Montserrat',sans-serif;">
+                    </div>
+                <button type="submit" id="button-submit">Add Task</button>
+            </form>
+        </div>
+    </center>
     </div>
   </div>
 
