@@ -75,7 +75,7 @@
           {% else %}
             <li class="list-group-item">
               <form action="{% url 'complete' task.id sub.id %}" method="POST">
-              <button type="submit" id="{{sub.id}}"><input type="radio" name="complete_var" onclick="butclick()" value="True"></button>
+              <button type="submit" id="{{sub.id}}"><input type="radio" name="complete_var" value="True"></button>
               </form>{{sub}}
               <script>
                   function butclick(){

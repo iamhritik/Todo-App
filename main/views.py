@@ -8,9 +8,18 @@ from django.core.mail import send_mail as sm
 from datetime import datetime, timedelta
 
 # Create your views here.
+"""
+  Views :
+    home -> Main Landing Page view
+    add_task -> Adding Main Task
+    add_sub -> Adding Sub task
+    del_task -> For deleting Main task and every sub task it contains
+    del_sub -> Deleting Sub tasks from main task
+    complete -> for represting complete functionality for sub tasks and main task
+"""
 def home(request):
-  tasks = Main_t.objects.all()
-  return render(request,'index.html',{'tasks': tasks, 'time' : timezone.now()})
+  tasks = Main_t.objects.all() #collecting all main Tasks
+  return render(request,'one.html',{'tasks': tasks, 'time' : timezone.now()})
 
 @csrf_exempt
 def add_task(request):
@@ -19,11 +28,11 @@ def add_task(request):
     task_d = request.POST["task_d"]
     content_add_time = timezone.now()
     end_date = request.POST["task_end_date"]
-    task1 = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time,end_date=end_date,complete=False)
-    Main_t.objects.create(main_t=task1)
-    return HttpResponseRedirect('add_task')
+    task = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time,end_date=end_date,complete=False)
+    Main_t.objects.create(main_t=task)
+    return HttpResponseRedirect(reverse('home'))
   else:
-    return render(request, 'add.html')
+    return HttpResponseRedirect(reverse('home'))
 
 @csrf_exempt
 def add_sub(request, num):
@@ -36,7 +45,7 @@ def add_sub(request, num):
       task = todo_tasks.objects.create(task_h=request.POST["subtask"],added_date=timezone.now(),complete=False)
       maint = Main_t.objects.get(id=num)
       maint.sub_t.add(task)
-    return HttpResponseRedirect(reverse("home"))
+    return HttpResponseRedirect(reverse('home'))
 
 
 @csrf_exempt
@@ -45,14 +54,14 @@ def del_task(request, id):
   main_task.sub_t.all().delete()
   main_task.save()
   todo_tasks.objects.get(task_h=main_task).delete()
-  return HttpResponseRedirect(reverse("home"))
+  return HttpResponseRedirect(reverse('home'))
 
 @csrf_exempt
 def del_sub(request, num1, num2):
   maint = Main_t.objects.get(id=num1)
   maint.sub_t.get(id=num2).delete()
   maint.save()
-  return HttpResponseRedirect(reverse("home"))
+  return HttpResponseRedirect(reverse('home'))
 
 @csrf_exempt
 def complete(request, mainid, subid):
@@ -63,7 +72,7 @@ def complete(request, mainid, subid):
       subt.complete = True
       subt.save()
       if maint.sub_t.filter(complete=False).count() == 0:
-        sm(subject = 'Task Completed !!! ',message = maint.main_t.task_d,from_email = 'ToDo-App <shahiblogs@gmail.com>',recipient_list = ['hritik.99@outlook.com','cocdrive89@gmail.com',],fail_silently=False,)
+        sm(subject = 'Task Completed !!! ',message = maint.main_t.task_h,from_email = 'ToDo-App <shahiblogs@gmail.com>',recipient_list = ['hritik.99@outlook.com','cocdrive89@gmail.com',],fail_silently=False,)
         maint.main_t.complete = True
         maint.main_t.save()
         return HttpResponseRedirect(reverse('home'))

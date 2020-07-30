@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+{% load static %} <!-- For Js/CSS/images -->
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <style>
+            .container-fluid {
+                margin-top: 56px;
+                padding: 0%;
+            }
+            .row {
+                margin: 0px;
+            }
+            .col-2 {
+                padding-right: 0%;
+            }
+
+            .nav-link span {
+                float: right;
+            }
+            .col-10 {
+                padding-left: 0%;
+            }
+            .card {
+                border: none;
+            }
+            .task-h {
+                padding: 0%;
+            }
+            .card .btn {
+                text-align: left;
+                border: none;
+                padding: 0%;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark bg-dark fixed-top">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand mx-auto" href=#>Todo-App</a>  
+        </nav>
+        <div class="container-fluid">  
+            <div class="row"> <!-- Main Row for Whole page -->
+                <div class="col-2 collapse navbar-collapse" id="navbarSupportedContent"> <!-- Collapse Bar for Toggling -->
+                    <ul class="nav flex-column">
+                        <a class="nav-link active" href="#">
+                            <li class="nav-item">
+                            Ongoing
+                            <span class="badge badge-primary badge-pill">3</span>
+                            </li>
+                        </a>
+                        <a class="nav-link active" href="#">
+                            <li class="nav-item">
+                            Pending
+                            <span class="badge badge-primary badge-pill">3</span>
+                            </li>
+                        </a>
+                        <a class="nav-link active" href="#">
+                            <li class="nav-item">
+                            Completed
+                            <span class="badge badge-primary badge-pill">3</span>
+                            </li>
+                        </a>
+                        <a class="nav-link active" href="#">
+                            <li class="nav-item">
+                            Analysis
+                            </li>
+                        </a>
+                      </ul>
+                </div>
+                <div class="col-0"></div> <!-- unnecessary div  -->
+                <div class="col"> <!-- Main Div for input and Show -->
+                    <div class="row"> <!-- Add task Bar -->
+                        <div class="col-1"> <!-- Button for Adding task Div -->
+                            <button class="btn" type="button" data-toggle="collapse" data-target="#inputform" aria-controls="inputform" aria-expanded="false" aria-label="Toggle navigation">
+                                <img src="{% static 'main/add-24px.svg' %}">
+                            </button>
+                        </div>
+                        <div class="col collapse navbar-collapse" id="inputform"> <!-- Add Task div -->
+                            <form action="{% url 'add_task' %}" method="post" id="addtask">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="text" name="task_h" class="form-control" placeholder="Task">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <textarea name="task_d" class="form-control" name="taskdetail" rows="2"  placeholder="Describe your Task"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <input type="text" name="task_end_date" class="form-control" id="datepicker" placeholder="Add date">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <button type="submit" class="btn" form="addtask"><img src="{% static 'main/check.svg' %}"></button>
+                                    </div>
+                                </div>
+                            </form>
+                            <script>
+                                $(function () {
+                                  $("#datepicker").datepicker({
+                                    format:'YYYY-MM-DD',
+                                  }
+                                    );
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="row"> <!-- Show Tasks Bar -->
+                        {% for task in tasks %}
+                        <div class="card text-black w-100 pl-3 pr-3"> <!-- Task Div -->
+                            <button class="btn" type="button" data-toggle="collapse" data-target="#task_data{{task.id}}" aria-controls="task_data{{task.id}}" aria-expanded="false" aria-label="Toggle navigation">
+                                <div class="card-header">{{task}} <span class="badge badge-light" style="float: right;">{{task.main_t.end_date}}</span></div>
+                            </button> <!-- To toggle further information for task -->
+                            <div class="card-body collapse navbar-collapse" id="task_data{{task.id}}">
+                                <p class="card-text">{{task.main_t.task_d}}</p>
+                                {% for subt in task.sub_t.all %}
+                                <ul>
+                                    <li><h6 class="card-title">{{subt}}</h6></li>
+                                </ul>
+                                {% endfor %}
+                                <button class="btn" type="button" data-toggle="collapse" data-target="#sub_task_data" aria-controls="sub_task_data" aria-expanded="false" aria-label="Toggle navigation">
+                                Add Subtask
+                                </button><!-- Button for adding subtask -->
+                                <div class="card-body collapse navbar-collapse" id="sub_task_data">
+                                    <form action="{% url 'add_sub' task.id %}" method="post">
+                                        <input type="text" name="subtask" placeholder="Enter sub Tasks here">
+                                        <input type="number" placeholder="Priority">
+                                        <input type="submit" placeholder="Add">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
