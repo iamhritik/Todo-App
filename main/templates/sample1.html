@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <style>
+            .form-control {
+                border: none;
+            }
+            .form-option .btn {
+                border-radius: 0%;
+                border: none;
+            }
+            .navbar-collapse {
+                flex-basis: 0%;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand mx-auto" href=#>TODO</a>  
+        </nav>
+        <div class="container-fluid">
+            <ul class="nav">
+                <div class="row ml-0 mr-0 w-100">
+                    <div class="col">
+                        <li class="nav-item float-left">
+                            <a class="nav-link active" href="#">Pending <span class="badge badge-primary badge-pill">3</span></a>
+                          </li>
+                    </div>
+                    <div class="col">
+                          <li class="nav-item float-left">
+                            <a class="nav-link" href="#">Completed <span class="badge badge-primary badge-pill">3</span></a>
+                          </li>
+                    </div>
+                    <div class="col-4">
+                        <li class="nav-item">
+                            <input type="search" class="form-control" placeholder="Search">
+                        </li>
+                    </div>
+                    <div class="col">
+                          <li class="nav-item float-right">
+                            <a class="nav-link active" href="#">Breached <span class="badge badge-primary badge-pill">3</span></a>
+                          </li>
+                    </div>
+                    <div class="col"><!--Analysis Bar-->
+                        <li class="nav-item float-right">
+                          <a class="nav-link" href="#">Analysis <img src="activity.svg"></a>
+                        </li>
+                  </div>
+                </div>
+            </ul>
+            <div class="row">
+                <div class="col-3"><!--Left Column for todays activity-->
+                    <ul class="list-group">
+                        <h5 class="text-center">Today</h3>
+                        <a class="nav-link active" href="#">
+                            <!--Use for loop here -->
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Cras justo odio
+                          <span class="badge badge-light    ">date</span>
+                        </li>
+                        </a>
+                      </ul>
+                </div>
+                <div class="col-6"><!--Middle Column For Adding Task and Showing Task-->
+                    <div class="row"><!--For Addition information-->
+                    </div>
+                    <div class="row"><!--For Adding Task-->
+                        <div class="col">
+                            <div class="row"><!--Add Button and Task name field-->
+                                <div class="col" style="max-width:fit-content; padding:0%;">
+                                    <button class="btn" type="button" data-toggle="collapse" data-target=".inputform" aria-controls="inputform" aria-expanded="false" aria-label="Toggle navigation">
+                                        <img src="add-24px.svg">
+                                    </button>
+                                </div>
+                                <div class="col collapse navbar-collapse inputform float-right" style="padding: 0px 5px">
+                                    <form>
+                                        <div class="form-group">
+                                        <input type="text" class="form-control" id="" placeholder="Task">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="" placeholder="Description">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row collapse navbar-collapse inputform"><!--Option Bar and Subtask add and many more option-->
+                                <div class="col" style="padding: 0px 5px"><!--Option Bar-->
+                                    <ul class="nav nav-tabs form-option float-right">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Add Subtask</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">End Date</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Reminder</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Notes</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row collapse navbar-collapse multi-collapse inputform" id="subtaskadd"><!--Subtask add Bar-->
+                                <div class="col" style="padding: 0px 5px">
+                                    <form>
+                                        <div class="form-group">
+                                        <input type="text" class="form-control" id="" placeholder="Sub Task">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="max-height: 20px;"><!--Additional Row-->
+                        <div class="col" style="max-height: 20px;">&nbsp</div>
+                    </div>
+                         <!--Do all show task here-->
+                    <div class="row"> <!--Repeat This Col/ use for loop before this -->
+                        <div class="col" style="padding: 0px ; max-width:max-content;"><!--For checking task-->
+                            <button type="submit" class="btn" style="width: 50px;">
+                                <input type="checkbox" aria-label="Checkbox for following text input">
+                            </button>
+                        </div>
+                        <div class="col">
+                           <a class="nav-link active" href="#" role="button"><!--For Opening task detail-->
+                                <h5>Task Title</h5>
+                           </a>
+                        </div>
+                        <div class="col" style="max-width: max-content; padding:0%; "><!--For editing task and extra options-->
+                            <button type="submit" class="btn">
+                              <img src="more-vertical.svg">
+                            </button>
+                        </div>
+                        <div class="col" style="max-width: max-content; padding:0%;"><!--For deleting Task-->
+                            <button type="button" class="btn">
+                              <img src="trash-2.svg">
+                            </button>
+                        </div>  
+                    </div>
+                </div>
+                <div class="col-3"><!--Third column-->
+                    <div class="row"><!--For Calender and date-->
+                        <div class="col">
+                            Input Current Date and calender Here
+                        </div>
+                    </div>
+                    <div class="row"><!--for completed tasks-->
+                        <div class="col">
+                            <!--Repeat This section for Date and task completed on these dates-->
+                            <div class="row">
+                                <div class="col">
+                                    For Date
+                                </div>
+                            </div>
+                            <div class="row"> <!--Repeat this for task on particular date-->
+                                <div class="col">
+                                    <a class="nav-link active" href="#" role="button">
+                                     <h6 style="text-decoration: line-through;">Main Task -> Subtask</h6>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
