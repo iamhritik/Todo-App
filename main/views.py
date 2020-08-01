@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 """
 def home(request):
   tasks = Main_t.objects.all() #collecting all main Tasks
-  return render(request,'one.html',{'tasks': tasks, 'time' : timezone.now()})
+  return render(request,'sample1.html',{'tasks': tasks, 'time' : timezone.now()})
 
 @csrf_exempt
 def add_task(request):

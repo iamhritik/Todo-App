@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+{% load static %}
     <head>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -47,7 +48,7 @@
                     </div>
                     <div class="col"><!--Analysis Bar-->
                         <li class="nav-item float-right">
-                          <a class="nav-link" href="#">Analysis <img src="activity.svg"></a>
+                          <a class="nav-link" href="#">Analysis <img src="{% static 'images/activity.svg' %}"></a>
                         </li>
                   </div>
                 </div>
@@ -60,7 +61,7 @@
                             <!--Use for loop here -->
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                           Cras justo odio
-                          <span class="badge badge-light    ">date</span>
+                          <span class="badge badge-light">date</span>
                         </li>
                         </a>
                       </ul>
@@ -71,24 +72,24 @@
                     <div class="row"><!--For Adding Task-->
                         <div class="col">
                             <div class="row"><!--Add Button and Task name field-->
-                                <div class="col" style="max-width:fit-content; padding:0%;">
+                                <div class="col-sm-1" style="max-width:fit-content; padding:0%;">
                                     <button class="btn" type="button" data-toggle="collapse" data-target=".inputform" aria-controls="inputform" aria-expanded="false" aria-label="Toggle navigation">
-                                        <img src="add-24px.svg">
+                                        <img src="{% static 'main/add-24px.svg' %}">
                                     </button>
                                 </div>
-                                <div class="col collapse navbar-collapse inputform float-right" style="padding: 0px 5px">
+                                <div class="col-sm-11 collapse navbar-collapse inputform float-right" style="padding: 0px 5px;">
                                     <form>
                                         <div class="form-group">
-                                        <input type="text" class="form-control" id="" placeholder="Task">
+                                            <input type="text" class="form-control" id="" placeholder="Task">
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="" placeholder="Description">
+                                            <textarea type="text" class="form-control" id="" placeholder="Description" rows="2"></textarea>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                             <div class="row collapse navbar-collapse inputform"><!--Option Bar and Subtask add and many more option-->
-                                <div class="col" style="padding: 0px 5px"><!--Option Bar-->
+                                <div class="col" style="padding: 0px 5px;"><!--Option Bar-->
                                     <ul class="nav nav-tabs form-option float-right">
                                         <li class="nav-item">
                                             <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Add Subtask</a>
@@ -100,13 +101,14 @@
                                             <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Reminder</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Notes</a>
+                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Submit</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="row collapse navbar-collapse multi-collapse inputform" id="subtaskadd"><!--Subtask add Bar-->
-                                <div class="col" style="padding: 0px 5px">
+                                <div class="col-sm-4"></div>
+                                <div class="col-sm-8" style="padding: 0px 5px;margin-left:3.5em;">
                                     <form>
                                         <div class="form-group">
                                         <input type="text" class="form-control" id="" placeholder="Sub Task">
@@ -133,12 +135,12 @@
                         </div>
                         <div class="col" style="max-width: max-content; padding:0%; "><!--For editing task and extra options-->
                             <button type="submit" class="btn">
-                              <img src="more-vertical.svg">
+                              <img src="{% static 'main/more-vertical.svg' %}">
                             </button>
                         </div>
                         <div class="col" style="max-width: max-content; padding:0%;"><!--For deleting Task-->
                             <button type="button" class="btn">
-                              <img src="trash-2.svg">
+                              <img src="{% static 'main/trash.png' %}">
                             </button>
                         </div>  
                     </div>
