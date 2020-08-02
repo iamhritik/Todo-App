@@ -7,10 +7,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail as sm
 from datetime import datetime, timedelta
 
+from django.views.generic import View
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 #index view
 def index(request):
   task = maintasks.objects.all()
-  return render(request,'index.html',{'tasks':task,'time':timezone.now()})
+  return render(request,'index.html',{'tasks':task})
 
 #view to add task 
 @csrf_exempt
@@ -20,7 +24,7 @@ def taskadd(request):
     taskdetail=request.POST["taskdetail"]
     enddate=request.POST["enddate"]
     submitdate=timezone.now()
-    if maintasks.objects.create(task_name=taskname,task_detail=taskdetail,added_date=submitdate,end_date=enddate,complete=False):
+    if maintasks.objects.create(task_name=taskname,task_detail=taskdetail,added_date=submitdate,end_date=enddate,complete=False,breached=False):
       return HttpResponseRedirect('taskadd')
   else:
     return render(request,'add.html')#when you submit nothing
@@ -61,3 +65,21 @@ def subtaskdelete(request,subid,taskid):
     taskname.subtask_status=True
     taskname.save()
     return HttpResponseRedirect('/taskdetail/'+str(taskid))
+
+def chart(request):
+  return render(request, 'chart.html', {})
+
+class chartdata(APIView):
+    authentication_classes = []
+    permission_classes = []
+    def get(self, request, format=None):
+      breached = maintasks.objects.filter(breached="True").count()
+      pending = maintasks.objects.filter(complete="False").count()
+      completed = maintasks.objects.filter(complete="True").count()
+      labels= ['Pending', 'Completed', 'Breached']
+      default_items = [pending, completed , breached]
+      data={
+          "labels":labels,
+          "default" : default_items,
+      }
+      return Response(data)
