@@ -31,6 +31,7 @@ def tasks(request):
   jtasks = json.dumps(tasks)
   return HttpResponse(f'{jtasks}')
 
+
 @csrf_exempt
 def add_task(request):
   if request.method == "POST":
@@ -40,7 +41,7 @@ def add_task(request):
     #end_date = request.POST["task_end_date"]
     task = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time,complete=False)
     a = Main_t.objects.create(main_t=task)
-   #resp = json.dumps({"id":a.id})
+    #resp = json.dumps({"id":a.id})
     return JsonResponse({"id":a.id})
 
 @csrf_exempt
