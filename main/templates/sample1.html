@@ -1,10 +1,8 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
     <head>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <style>
             .form-control {
                 border: none;
@@ -16,7 +14,132 @@
             .navbar-collapse {
                 flex-basis: 0%;
             }
+            .inputform {
+                display: block;
+            }
+            .sublink_div {
+                display: none;
+            }
         </style>
+        <script>
+            //display already existing tasks
+            function disp(data){
+                const newd = document.createElement('div');
+                newd.className = "row";
+                newd.innerHTML = '<div class="col" style="padding: 0px ; max-width:max-content;"><button type="submit" class="btn" style="width: 50px;"><input type="checkbox" aria-label="Checkbox for following text input"></button></div><div class="col"><a class="nav-link active" href="#" role="button"><h5>'+data.tasks.task_h+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${data.main_id}" class="maintaskdelform"><input type="number" value="${data.main_id}" name="tasktodel" id="tasktodel${data.main_id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></form></div>`;
+
+                document.getElementById("mainc").append(newd);
+            }
+
+            //for collapses
+            function showdiv(sublinks){
+                const divtoshow = document.querySelector(`#${sublinks}`)
+                document.querySelectorAll('.sublink_div').forEach(sublink_div => {
+                    sublink_div.style.display = "none"
+                })
+                
+                if (divtoshow.style.display === "none"){
+                    divtoshow.style.display = "block";
+                } else {
+                    divtoshow.style.display = "none";
+                }
+            }
+
+            //for showing new tasks
+            function dispmod(data, resp){
+                const extdiv = document.createElement('div')
+                extdiv.className = "row";
+                extdiv.innerHTML = '<div class="col" style="padding: 0px ; max-width:max-content;"><button type="submit" class="btn" style="width: 50px;"><input type="checkbox" aria-label="Checkbox for following text input"></button></div><div class="col"><a class="nav-link active" href="#" role="button"><h5>'+data.task_h.value+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${resp.id}" class="maintaskdelform"><input type="number" value="${resp.id}" name="tasktodel" id="tasktodel${resp.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></div>`;
+                document.getElementById("mainc").append(extdiv);
+
+            }
+
+            //for submitting new task form 
+            function SubmitAddTask(form) {
+                const XHR = new XMLHttpRequest();
+                const formdata = new FormData(form);
+
+                XHR.addEventListener("load", function(event) {
+                    const resp = XHR.response; // response from add event
+                    dispmod(form, JSON.parse(resp));
+                    document.getElementById("task_h").value = "";
+                })
+
+                XHR.addEventListener("error", function(event){
+                    cosnole.log(event);
+                })
+
+                XHR.open("POST", "/add_task");
+                XHR.send(formdata);
+            }
+
+            //Delete Main Task
+            function DeleteTask(deletemaintaskform) {
+                const XHR = new XMLHttpRequest();
+                const formdata = new FormData(deletemaintaskform);
+
+                XHR.addEventListener("load", function(event) {
+                    deletemaintaskform.parentElement.parentElement.remove();
+                })
+
+                XHR.addEventListener("error", function(event){
+                    cosnole.log(event);
+                })
+
+                XHR.open("POST", `/del_task/${deletemaintaskform.tasktodel.value}`);
+                XHR.send(deletemaintaskform);
+            }
+
+            //main event linstener
+            document.addEventListener('DOMContentLoaded', function () {
+
+                //fetching data for existing tasks
+                fetch('/tasks')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach( data => {
+                        console.log(data);
+                        disp(data);
+                    })
+                });
+
+                //For toggling
+                document.querySelector('.inputform').style.display = "none";
+                document.querySelectorAll('.sublink_div').forEach( sublink_div => {
+                    sublink_div.style.display = "none";
+                })
+
+                //For displaying add task form
+                document.querySelector('#addbtn').onclick = () => {
+                    const divs = document.querySelector('.inputform');
+                    if(divs.style.display === "none"){
+                            divs.style.display = "block";
+                    }else {
+                        divs.style.display = "none";
+                    }
+                };
+
+                //for toggling sublinks of add task
+                document.querySelectorAll('.sublink').forEach( sublink => {
+                    sublink.onclick = function () {
+                        showdiv(this.dataset.sublinks);
+                    }
+                });
+
+                //for fetching add task form and deleting main task
+                document.addEventListener("submit", function(event){
+                    event.preventDefault();
+                    const element = event.target;
+                    if(element.id === "formaddtask"){
+                        SubmitAddTask(element);   
+                    }else if (element.className === "maintaskdelform"){
+                        DeleteTask(element);
+                    }
+                }); 
+                
+            });
+
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-dark bg-dark">
@@ -47,7 +170,7 @@
                     </div>
                     <div class="col"><!--Analysis Bar-->
                         <li class="nav-item float-right">
-                          <a class="nav-link" href="#">Analysis <img src="activity.svg"></a>
+                          <a class="nav-link" href="#">Analysis <img src="{% static 'main/activity.svg' %}"></a>
                         </li>
                   </div>
                 </div>
@@ -65,53 +188,58 @@
                         </a>
                       </ul>
                 </div>
-                <div class="col-6"><!--Middle Column For Adding Task and Showing Task-->
+                <div class="col-6" id="mainc"><!--Middle Column For Adding Task and Showing Task-->
                     <div class="row"><!--For Addition information-->
                     </div>
                     <div class="row"><!--For Adding Task-->
                         <div class="col">
                             <div class="row"><!--Add Button and Task name field-->
                                 <div class="col" style="max-width:fit-content; padding:0%;">
-                                    <button class="btn" type="button" data-toggle="collapse" data-target=".inputform" aria-controls="inputform" aria-expanded="false" aria-label="Toggle navigation">
-                                        <img src="add-24px.svg">
+                                    <button class="btn" type="button" id="addbtn">
+                                        <img src="{% static 'main/add-24px.svg' %}">
                                     </button>
                                 </div>
-                                <div class="col collapse navbar-collapse inputform float-right" style="padding: 0px 5px">
-                                    <form>
-                                        <div class="form-group">
-                                        <input type="text" class="form-control" id="" placeholder="Task">
+                                <div class="col float-right inputform" style="padding: 0px">
+                                    <div class="row" style="width:inherit; margin:0%;">
+                                        <div class="col" style="padding: 0px 5px;">
+                                            <form id="formaddtask">
+                                                <div class="form-group">
+                                                <input type="text" name="task_h" class="form-control" id="task_h" placeholder="Task">
+                                                </div>
+                                                <div class="form-group" hidden>
+                                                    <input type="text" name="task_d" class="form-control" id="task_d" placeholder="Task desc">
+                                                </div>
+                                                <input type="submit" id="tasksubmit" hidden>
+                                            </form>
                                         </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="" placeholder="Description">
+                                    </div>
+                                    <div class="row"  style="width:inherit; margin:0%;"><!--Option Bar and Subtask add and many more option-->
+                                        <div class="col" style="padding: 0px 5px"><!--Option Bar-->
+                                            <ul class="nav nav-tabs form-option float-right" style="border-bottom: none;">
+                                                <li class="nav-item" style="height: 26px;">
+                                                    <a class="nav-link active sublink" style="border: none; padding: 1px 8px; font-size:small;" data-sublinks="subtaskadd" role="button">Add Subtask</a>
+                                                </li>
+                                                <li class="nav-item" style="height: 26px;">
+                                                    <a class="nav-link active  sublink" style="border: none; padding: 1px 8px; font-size:small;" data-sublinks="enddate" href="#enddate" role="button">End Date</a>
+                                                </li>
+                                                <li class="nav-item" style="height: 26px;">
+                                                    <a class="nav-link active  sublink" style="border: none; padding: 1px 8px; font-size:small;" data-sublinks="reminder" href="#reminder" role="button">Reminder</a>
+                                                </li>
+                                                <li class="nav-item" style="height: 26px;">
+                                                    <a class="nav-link active  sublink" style="border: none; padding: 1px 8px; font-size:small;" data-sublinks="notes" href="#notes" role="button">Notes</a>
+                                                </li>
+                                            </ul>
                                         </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="row collapse navbar-collapse inputform"><!--Option Bar and Subtask add and many more option-->
-                                <div class="col" style="padding: 0px 5px"><!--Option Bar-->
-                                    <ul class="nav nav-tabs form-option float-right">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Add Subtask</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">End Date</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Reminder</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="collapse" href="#subtaskadd" role="button" aria-expanded="false" aria-controls="subtaskadd">Notes</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="row collapse navbar-collapse multi-collapse inputform" id="subtaskadd"><!--Subtask add Bar-->
-                                <div class="col" style="padding: 0px 5px">
-                                    <form>
-                                        <div class="form-group">
-                                        <input type="text" class="form-control" id="" placeholder="Sub Task">
+                                    </div>
+                                    <div class="row sublink_div" id="subtaskadd" style="width:inherit; margin:0%;"><!--Subtask add Bar-->
+                                        <div class="col" style="padding: 0px 5px">
+                                            <form>
+                                                <div class="form-group">
+                                                <input type="text" class="form-control" id="" placeholder="Sub Task">
+                                                </div>
+                                            </form>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -132,14 +260,17 @@
                            </a>
                         </div>
                         <div class="col" style="max-width: max-content; padding:0%; "><!--For editing task and extra options-->
-                            <button type="submit" class="btn">
-                              <img src="more-vertical.svg">
+                            <button type="submit" class="btn" style="background-color: white;">
+                              <img src="{% static 'main/more-vertical.svg' %}">
                             </button>
                         </div>
                         <div class="col" style="max-width: max-content; padding:0%;"><!--For deleting Task-->
-                            <button type="button" class="btn">
-                              <img src="trash-2.svg">
-                            </button>
+                            <form id="deletemain">
+                                <input type="number" value="" name="tasktodel" hidden>
+                                <button type="submit" class="btn" style="background-color: white;">
+                                    <img src="{% static 'main/trash-2.svg' %}">
+                                </button>
+                            </form>
                         </div>  
                     </div>
                 </div>

@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.utils import timezone
+import json
+from django.core import serializers
 from main.models import todo_tasks, Main_t
 from django.urls import reverse
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail as sm
 from datetime import datetime, timedelta
@@ -19,7 +21,15 @@ from datetime import datetime, timedelta
 """
 def home(request):
   tasks = Main_t.objects.all() #collecting all main Tasks
-  return render(request,'one.html',{'tasks': tasks, 'time' : timezone.now()})
+  return render(request,'sample1.html',{
+    "tasks" : tasks
+  })
+
+def tasks(request):
+  maint = Main_t.objects.all()
+  tasks = [{"main_id":i.id,"tasks":{"id":i.main_t.id,"task_h":i.main_t.task_h,"complete":i.main_t.complete}} for i in Main_t.objects.all()]
+  jtasks = json.dumps(tasks)
+  return HttpResponse(f'{jtasks}')
 
 @csrf_exempt
 def add_task(request):
@@ -27,12 +37,11 @@ def add_task(request):
     task_h = request.POST["task_h"]
     task_d = request.POST["task_d"]
     content_add_time = timezone.now()
-    end_date = request.POST["task_end_date"]
-    task = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time,end_date=end_date,complete=False)
-    Main_t.objects.create(main_t=task)
-    return HttpResponseRedirect(reverse('home'))
-  else:
-    return HttpResponseRedirect(reverse('home'))
+    #end_date = request.POST["task_end_date"]
+    task = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time,complete=False)
+    a = Main_t.objects.create(main_t=task)
+   #resp = json.dumps({"id":a.id})
+    return JsonResponse({"id":a.id})
 
 @csrf_exempt
 def add_sub(request, num):
@@ -54,7 +63,7 @@ def del_task(request, id):
   main_task.sub_t.all().delete()
   main_task.save()
   todo_tasks.objects.get(task_h=main_task).delete()
-  return HttpResponseRedirect(reverse('home'))
+  return HttpResponse(b'Successful')
 
 @csrf_exempt
 def del_sub(request, num1, num2):
