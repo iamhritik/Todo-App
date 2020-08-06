@@ -1,22 +1,54 @@
 from django.db import models
 from django.utils import timezone
-# Create your models here.
 
-class maintasks(models.Model):
-  task_name=models.CharField(max_length=200,blank=True,null=True)
-  task_detail = models.CharField(max_length=400,blank=True,null=True)
-  added_date=models.DateTimeField()
-  end_date = models.DateTimeField(null=True)
-  complete = models.BooleanField()
-  breached = models.BooleanField()
-  emailid = models.CharField(max_length=20,null=True)
+#---------MODELS DESCRIPTION--------
+#maintask:for your main tasks
+#subtask: for subtask
+#notes: for add some notes in the task
+#taskstatus: to check the task status
+#userinfo: to store user information..
+
+class maintask(models.Model):
+  task_name=models.CharField(max_length=100,blank=True,null=True)
+  add_date=models.DateTimeField(auto_now_add=True)
+  end_date=models.DateTimeField(null=True)
   def __str__(self):
-  	return self.task_detail
+  	return self.task_name
 
-class subtasks(models.Model):
-  subtask=models.CharField(max_length=30,null=True)
-  parenttask = models.ForeignKey(maintasks, on_delete=models.CASCADE)
-  subtask_status=models.BooleanField()
+class subtask(models.Model):
+  subtask_name=models.CharField(max_length=30,null=True)
+  parenttask=models.ForeignKey(maintask, on_delete=models.CASCADE)
   def __self__(self):
     return self.subtask
+
+class notes(models.Model):
+  notes_name=models.CharField(max_length=150,null=True)
+  parenttask=models.ForeignKey(maintask, on_delete=models.CASCADE)
+  def __self__(self):
+    return self.notes_name
+
+class taskstatus(models.Model):
+  options = (
+    ('pending','pending'),
+    ('completed','completed'),
+    ('breached','breached'),
+  )
+  status=models.CharField(max_length=10,choices=options,default='pending')
+  def __self__(self):
+    return self.task_status
+
+class userinfo(models.Model):
+  username=models.CharField(max_length=100,blank=True,null=True)
+  useremail=models.CharField(max_length=100,blank=True,null=True)
+  parenttask=models.ForeignKey(maintask, on_delete=models.CASCADE)
+  def __self__(self):
+    return username
+
+
+
+
+
+
+
+
 

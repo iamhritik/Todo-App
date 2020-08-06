@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.utils import timezone
-from main.models import maintasks,subtasks
+from main.models import *
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -13,8 +13,8 @@ from rest_framework.response import Response
 
 #index view
 def index(request):
-  task = maintasks.objects.all()
-  return render(request,'index.html',{'tasks':task})
+  task = maintask.objects.all()
+  return render(request,'sample1.html',{'tasks':task})
 
 #view to add task 
 @csrf_exempt
@@ -73,9 +73,9 @@ class chartdata(APIView):
     authentication_classes = []
     permission_classes = []
     def get(self, request, format=None):
-      breached = maintasks.objects.filter(breached="True").count()
-      pending = maintasks.objects.filter(complete="False").count()
-      completed = maintasks.objects.filter(complete="True").count()
+      breached = maintask.objects.filter(breached="True").count()
+      pending = maintask.objects.filter(complete="False").count()
+      completed = maintask.objects.filter(complete="True").count()
       labels= ['Pending', 'Completed', 'Breached']
       default_items = [pending, completed , breached]
       data={
