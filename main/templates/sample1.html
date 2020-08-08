@@ -3,6 +3,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <style>
             .form-control {
                 border: none;
@@ -54,11 +55,22 @@
                 }
             }
 
+
+            function checkboxer(){
+                if (document.getElementById("taskupp").checked == false) 
+                    {
+                        console.log("not checked");
+                    } else {    
+                        document.getElementById("submitstatusbtn").click();
+                        console.log("checked");
+                    }
+            }
+
             //for showing new tasks
             function dispmod(data, resp){
                 const extdiv = document.createElement('div')
                 extdiv.className = "row homedivs";
-                extdiv.innerHTML = `<div class="col" style="padding: 0px ; max-width:50px;"><form id="status${resp.task_id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${resp.task_id}" name="taskid" value="${resp.task_id}"><input type="checkbox" id="task${resp.task_id}" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${resp.task_id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><h5>`+data.task_h.value+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${resp.id}" class="maintaskdelform"><input type="number" value="${resp.id}" name="tasktodel" id="tasktodel${resp.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></div>`;
+                extdiv.innerHTML = `<div class="col" style="padding: 0px ; max-width:50px;"><form id="status${resp.task_id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${resp.task_id}" name="taskid" value="${resp.task_id}"><input type="checkbox" id="taskupp" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True" onchange="checkboxer()"><button type="submit" id="submitstatusbtn" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><h5>`+data.task_h.value+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${resp.id}" class="maintaskdelform"><input type="number" value="${resp.id}" name="tasktodel" id="tasktodel${resp.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></div>`;
                 document.getElementById("mainc").append(extdiv);
 
             }
