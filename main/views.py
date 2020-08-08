@@ -42,7 +42,7 @@ def add_task(request):
     task = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time,complete=False)
     a = Main_t.objects.create(main_t=task)
     #resp = json.dumps({"id":a.id})
-    return JsonResponse({"id":a.id})
+    return JsonResponse({"id":a.id,"task_id":a.main_t.id})
 
 @csrf_exempt
 def add_sub(request, num):
@@ -74,9 +74,19 @@ def del_sub(request, num1, num2):
   return HttpResponseRedirect(reverse('home'))
 
 @csrf_exempt
-def complete(request, mainid, subid):
+def complete(request, taskid):
   if request.method == "POST":
-    maint = Main_t.objects.get(id=mainid)
+    task = todo_tasks.objects.get(id=taskid)
+    try:
+      maint = Main_t.objects.get(main_t=task)
+      if request.POST["taskstatus"] == "True":
+        maint.main_t.complete = True
+        maint.main_t.save()
+        maint.save()
+        return HttpResponse(b'Done')
+    except :
+      return HttpResponse(b'Not Done')
+    """maint = Main_t.objects.get(id=mainid)
     subt = maint.sub_t.get(id=subid)
     if request.POST["complete_var"] == "True":
       subt.complete = True
@@ -88,8 +98,9 @@ def complete(request, mainid, subid):
         sendmail(mainid)
         return HttpResponseRedirect(reverse('home'))
     return HttpResponseRedirect(reverse('home')) 
-    
+    """
+
 def sendmail(mainid):
   maint=Main_t.objects.get(id=mainid)
-  sm(subject = 'Task Completed !!! ',message = maint.main_t.task_d,from_email = 'ToDo-App <shahiblogs@gmail.com>',recipient_list = ['hritik.99@outlook.com',],fail_silently=False,)
+  sm(subject = 'Task Completed !!! ',message = maint.main_t.task_d,from_email = 'ToDo-App <example@gmail.com>',recipient_list = ['example@outlook.com',],fail_silently=False,)
 
