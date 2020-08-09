@@ -25,17 +25,28 @@
             }
         </style>
         <script>
+
+            //To submit after checking task
+            function checkerbox(event){
+                const targform = event.target.parentElement; 
+                targform[2].click();
+            }
+
+            function showcompletetask(name, taskid){
+                const comd = document.createElement('div');
+                comd.className = `row taskrow-${taskid}`;
+                comd.innerHTML = `<div class="col"><a class="nav-link active" href="#" role="button"><h6 style="text-decoration: line-through;">${name}</h6></a></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${taskid}" class="maintaskdelform"><input type="number" value="${taskid}" name="tasktodel" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}" style="width:20px; height:20px;"></button></div>`;
+                document.getElementById("completedtaskdiv").append(comd);
+            }
+
             //display already existing tasks
             function disp(data){
                 if(data.tasks.complete === true){
-                    const comd = document.createElement('div');
-                    comd.className = "row";
-                    comd.innerHTML = `<div class="col"><a class="nav-link active" href="#" role="button"><h6 style="text-decoration: line-through;">${data.tasks.task_h}</h6></a></div>`;
-                    document.getElementById("completedtaskdiv").append(comd);
+                    showcompletetask(data.tasks.task_h,data.tasks.id);
                 }else {
                     const newd = document.createElement('div');
-                    newd.className = "row homedivs";
-                    newd.innerHTML = `<div class="col" style="padding: 0px ; max-width:50px;"><form id="status${data.tasks.id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${data.tasks.id}" name="taskid" value="${data.tasks.id}"><input type="checkbox" id="task${data.tasks.id}" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${data.tasks.id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><h5>`+data.tasks.task_h+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${data.main_id}" class="maintaskdelform"><input type="number" value="${data.main_id}" name="tasktodel" id="tasktodel${data.main_id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></form></div>`;
+                    newd.className = `row homedivs taskrow-${data.tasks.id}`;
+                    newd.innerHTML = `<div class="col check-comp" style="padding: 0px ; max-width:50px;"><form id="status${data.tasks.id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${data.tasks.id}" name="taskid" value="${data.tasks.id}"><input type="checkbox" id="task${data.tasks.id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${data.tasks.id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><h5 class="maintaskname">`+data.tasks.task_h+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${data.main_id}" class="maintaskdelform"><input type="number" value="${data.main_id}" name="tasktodel" id="tasktodel${data.main_id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></form></div>`;
                     document.getElementById("mainc").append(newd);
                 }
             }
@@ -57,8 +68,8 @@
             //for showing new tasks
             function dispmod(data, resp){
                 const extdiv = document.createElement('div')
-                extdiv.className = "row homedivs";
-                extdiv.innerHTML = `<div class="col" style="padding: 0px ; max-width:50px;"><form id="status${resp.task_id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${resp.task_id}" name="taskid" value="${resp.task_id}"><input type="checkbox" id="task${resp.task_id}" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${resp.task_id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><h5>`+data.task_h.value+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${resp.id}" class="maintaskdelform"><input type="number" value="${resp.id}" name="tasktodel" id="tasktodel${resp.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></div>`;
+                extdiv.className = `row homedivs taskrow-${resp.task_id}`;
+                extdiv.innerHTML = `<div class="col check-comp" style="padding: 0px ; max-width:50px;"><form id="status${resp.task_id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${resp.task_id}" name="taskid" value="${resp.task_id}"><input type="checkbox" id="task${resp.task_id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${resp.task_id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><h5 class="maintaskname">`+data.task_h.value+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${resp.id}" class="maintaskdelform"><input type="number" value="${resp.id}" name="tasktodel" id="tasktodel${resp.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></div>`;
                 document.getElementById("mainc").append(extdiv);
 
             }
@@ -104,12 +115,14 @@
                 const formdata = new FormData(completetaskform);
 
                 XHR.addEventListener("load", function(event) {
-                    console.log(XHR.response);
-                    console.log(event);
+                    const pele = completetaskform.parentElement.parentElement;
+                    const taskname = pele.getElementsByClassName("maintaskname")[0].innerHTML;
+                    showcompletetask(taskname,completetaskform.taskid.value);
+                    pele.style.display = "none";
+                    
                 })
 
                 XHR.addEventListener("error", function(event){
-                    cosnole.log(XHR.response);
                     console.log(event);
                 })
 
@@ -125,10 +138,26 @@
                 fetch('/tasks')
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach( data => {
+                    data.forEach( data => {                                                                                                                           
                         disp(data);
                     })
                 });
+
+                //search bar
+                const tasklist = document.querySelector("#mainc");
+                const searchbar = document.forms["searchform"].querySelector('input');
+                searchbar.addEventListener('keyup', function(event) {
+                    const searchterm = event.target.value.toLowerCase();
+                    const tasks = tasklist.getElementsByClassName("maintaskname");
+                    Array.from(tasks).forEach(function(task){
+                        const tname = task.textContent;
+                        if(tname.toLowerCase().indexOf(searchterm) != -1){
+                            task.parentElement.parentElement.parentElement.style.display = "flex";
+                        }else{
+                            task.parentElement.parentElement.parentElement.style.display = "none";
+                        }
+                    })
+                })
 
                 //For toggling
                 document.querySelector('.inputform').style.display = "none";
@@ -210,7 +239,9 @@
                     </div>
                     <div class="col-4">
                         <li class="nav-item">
-                            <input type="search" class="form-control" placeholder="Search">
+                            <form id="searchform">
+                            <input type="text" id="searchinput" name="searchinput" class="form-control" placeholder="Search">
+                            </form>
                         </li>
                     </div>
                     <div class="col">
@@ -337,13 +368,6 @@
                             <div class="row">
                                 <div class="col">
                                     For Date
-                                </div>
-                            </div>
-                            <div class="row"> <!--Repeat this for task on particular date-->
-                                <div class="col">
-                                    <a class="nav-link active" href="#" role="button">
-                                     <h6 style="text-decoration: line-through;">Main Task</h6>
-                                    </a>
                                 </div>
                             </div>
                         </div>
