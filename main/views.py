@@ -79,11 +79,10 @@ def complete(request, taskid):
     task = todo_tasks.objects.get(id=taskid)
     try:
       maint = Main_t.objects.get(main_t=task)
-      if request.POST["taskstatus"] == "True":
-        maint.main_t.complete = True
-        maint.main_t.save()
-        maint.save()
-        return HttpResponse(b'Done')
+      maint.main_t.complete = True
+      maint.main_t.save()
+      maint.save()
+      return HttpResponse(b'Done')
     except :
       return HttpResponse(b'Not Done')
     """maint = Main_t.objects.get(id=mainid)
