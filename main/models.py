@@ -40,8 +40,8 @@ class taskstatus(models.Model):
     return self.task_status
 
 class userinfo(models.Model):
-  username=models.CharField(max_length=100,blank=True,null=True)
-  useremail=models.CharField(max_length=100,blank=True,null=True)
+  username=models.CharField(max_length=100)
+  useremail=models.CharField(max_length=100)
   def __self__(self):
     return username
 
