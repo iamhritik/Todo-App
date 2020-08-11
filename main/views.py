@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail as sm
 from datetime import datetime, timedelta
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 """
@@ -18,12 +19,19 @@ from datetime import datetime, timedelta
     del_task -> For deleting Main task and every sub task it contains
     del_sub -> Deleting Sub tasks from main task
     complete -> for represting complete functionality for sub tasks and main task
-"""
-def home(request):
-  tasks = Main_t.objects.all() #collecting all main Tasks
-  return render(request,'sample1.html',{
+
+
+    tasks = Main_t.objects.all() #collecting all main Tasks
+      return render(request,'sample1.html',{
     "tasks" : tasks
   })
+
+"""
+
+@login_required(login_url='/accounts/login/')
+def home(request):
+  tasks = Main_t.objects.all() #collecting all main Tasks
+  return render(request,'sample1.html',{"tasks" : tasks})
 
 def tasks(request):
   maint = Main_t.objects.all()
