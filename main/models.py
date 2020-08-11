@@ -10,6 +10,7 @@ from django.utils import timezone
 
 class maintask(models.Model):
   task_name=models.CharField(max_length=100,blank=True,null=True)
+  createdby = models.ForeingKey(userinfo, on_delete = models.CASCADE, related_name="tasks")
   add_date=models.DateTimeField(auto_now_add=True)
   end_date=models.DateTimeField(null=True)
   def __str__(self):
@@ -17,13 +18,13 @@ class maintask(models.Model):
 
 class subtask(models.Model):
   subtask_name=models.CharField(max_length=30,null=True)
-  parenttask=models.ForeignKey(maintask, on_delete=models.CASCADE)
+  parenttask=models.ForeignKey(maintask, on_delete=models.CASCADE, related_name="subtasks")
   def __self__(self):
     return self.subtask
 
 class notes(models.Model):
   notes_name=models.CharField(max_length=150,null=True)
-  parenttask=models.ForeignKey(maintask, on_delete=models.CASCADE)
+  parenttask=models.ForeignKey(maintask, on_delete=models.CASCADE, related_name="notes")
   def __self__(self):
     return self.notes_name
 
@@ -34,13 +35,13 @@ class taskstatus(models.Model):
     ('breached','breached'),
   )
   status=models.CharField(max_length=10,choices=options,default='pending')
+  task = models.OneToOneField(maintask, on_delete=models.CASCADE, related_name="status")
   def __self__(self):
     return self.task_status
 
 class userinfo(models.Model):
   username=models.CharField(max_length=100,blank=True,null=True)
   useremail=models.CharField(max_length=100,blank=True,null=True)
-  parenttask=models.ForeignKey(maintask, on_delete=models.CASCADE)
   def __self__(self):
     return username
 
