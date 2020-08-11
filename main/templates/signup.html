@@ -1,0 +1,26 @@
+ <!DOCTYPE html>
+{% load static %}
+{% load socialaccount %}
+{% providers_media_js %}
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <style>
+	        body{background-color: #1F2023;}
+	        .signup{margin-top:20em;}
+	        #link{text-decoration: none;}
+	        #img{height:3em;width:3em;}
+        </style>
+    </head>
+<body>
+	<div class="signup">
+		<center>
+			<a title="Google" class="socialaccount_provider google" href="/accounts/google/login/?process=login&next=%2F" id="link">
+			<img src="{% static 'main/googlesign.png'%}" id="img"/>&nbsp;SIGN IN WITH GOOGLE
+			</a>
+		</center>
+ </div>
+</center>
+</body>
+</html>

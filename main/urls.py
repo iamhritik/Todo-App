@@ -5,6 +5,7 @@ from django.urls import path
 
 urlpatterns=[
 	path('',views.home, name="home"),
+	path('signup',views.signup, name="signup"),
     path('add_task', views.add_task, name="add_task"),
     path('del_task/<int:id>', views.del_task, name="del_task"),
     path('add_sub/<int:num>', views.add_sub, name="add_sub"),

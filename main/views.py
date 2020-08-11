@@ -28,10 +28,13 @@ from django.contrib.auth.decorators import login_required
 
 """
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/signup')
 def home(request):
   tasks = Main_t.objects.all() #collecting all main Tasks
   return render(request,'sample1.html',{"tasks" : tasks})
+
+def signup(request):
+  return render(request, 'signup.html', {})
 
 def tasks(request):
   maint = Main_t.objects.all()
