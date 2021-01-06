@@ -4,7 +4,17 @@
     <head>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!--jquery-->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+        <!-- date picker-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
         <style>
+            body {
+                color:#007bff;
+            }
             .form-control {
                 border: none;
             }
@@ -24,8 +34,73 @@
             #pendingtasks {
                 display: none;
             }
+            .clockdate-wrapper {
+                background-color: #007bff;
+                padding:5px;
+                max-width:250px;
+                width:100%;
+                text-align:center;
+                border-radius:5px;
+                margin:0 auto;
+                margin-top:5%;
+            }
+            #clock{
+                background-color:#007bff;
+                font-family: sans-serif;
+                font-size:15px;
+                text-shadow:0px 0px 1px #fff;
+                color:#fff;
+            }
+            #clock span {
+                color: #fff;
+                text-shadow:0px 0px 1px #333;
+                font-size:9px;
+                position:relative;
+                top:-7px;
+                left:-1px;
+            }
+            #date {
+                letter-spacing:2px;
+                font-size:10px;
+                font-family:arial,sans-serif;
+                color:#fff;
+            }
         </style>
         <script>
+            var id;
+            //clock and date
+            function startTime() {
+                var today = new Date();
+                var hr = today.getHours();
+                var min = today.getMinutes();
+                var sec = today.getSeconds();
+                ap = (hr < 12) ? "<span>AM</span>" : "<span>PM</span>";
+                hr = (hr == 0) ? 12 : hr;
+                hr = (hr > 12) ? hr - 12 : hr;
+                //Add a zero in front of numbers<10
+                hr = checkTime(hr);
+                min = checkTime(min);
+                sec = checkTime(sec);
+                document.getElementById("clock").innerHTML = hr + ":" + min + ":" + sec + " " + ap;
+                
+                var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                var curWeekDay = days[today.getDay()];
+                var curDay = today.getDate();
+                var curMonth = months[today.getMonth()];
+                var curYear = today.getFullYear();
+                var date = curWeekDay+", "+curDay+" "+curMonth+" "+curYear;
+                document.getElementById("date").innerHTML = date;
+                
+                var time = setTimeout(function(){ startTime() }, 500);
+            }
+
+            function checkTime(i) {
+                if (i < 10) {
+                    i = "0" + i;
+                }
+                return i;
+            }
 
             //To submit after checking task
             function checkerbox(event){
@@ -35,19 +110,20 @@
 
             function showcompletetask(name, taskid){
                 const comd = document.createElement('div');
-                comd.className = `row taskrow-${taskid}`;
-                comd.innerHTML = `<div class="col"><a class="nav-link active" href="#" role="button"><h6 style="text-decoration: line-through;">${name}</h6></a></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${taskid}" class="maintaskdelform"><input type="number" value="${taskid}" name="tasktodel" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}" style="width:20px; height:20px;"></button></div>`;
+                comd.className = `row completetaskrow-${taskid}`;
+                comd.innerHTML = `<div class="col"><a class="nav-link active" href="#" role="button"><h6 style="text-decoration: line-through;">${name}</h6></a></div><div class="col" style="max-width: max-content; padding:0%;"><form id="compldeletemain${taskid}" class="maintaskdelform"><input type="number" value="${taskid}" name="tasktodel" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}" style="width:20px; height:20px;"></button></div>`;
                 document.getElementById("completedtaskdiv").append(comd);
             }
 
             //display already existing tasks
             function disp(data){
+                console.log(data)
                 if(data.tasks.complete === true){
                     showcompletetask(data.tasks.task_h,data.tasks.id);
                 }else {
                     const newd = document.createElement('div');
                     newd.className = `row homedivs taskrow-${data.tasks.id}`;
-                    newd.innerHTML = `<div class="col check-comp" style="padding: 0px ; max-width:50px;"><form id="status${data.tasks.id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${data.tasks.id}" name="taskid" value="${data.tasks.id}"><input type="checkbox" id="task${data.tasks.id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${data.tasks.id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><h5 class="maintaskname">`+data.tasks.task_h+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${data.main_id}" class="maintaskdelform"><input type="number" value="${data.main_id}" name="tasktodel" id="tasktodel${data.main_id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></form></div>`;
+                    newd.innerHTML = `<div class="col check-comp" style="padding: 0px ; max-width:50px;"><form id="status${data.tasks.id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${data.tasks.id}" name="taskid" value="${data.tasks.id}"><input type="checkbox" id="task${data.tasks.id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${data.tasks.id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><div class="row"><div class="col"><h5 class="maintaskname">`+data.tasks.task_h+`</h5></div><div class="col"><span style="float:right; max-width:fit-content; color:#a31e17;"></span></div></div></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${data.main_id}" class="maintaskdelform"><input type="number" value="${data.main_id}" name="tasktodel" id="tasktodel${data.main_id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></form></div>`;
                     document.getElementById("mainc").append(newd);
                 }
             }
@@ -80,8 +156,8 @@
             //for showing new tasks
             function dispmod(data, resp){
                 const extdiv = document.createElement('div')
-                extdiv.className = `row homedivs taskrow-${resp.task_id}`;
-                extdiv.innerHTML = `<div class="col check-comp" style="padding: 0px ; max-width:50px;"><form id="status${resp.task_id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${resp.task_id}" name="taskid" value="${resp.task_id}"><input type="checkbox" id="task${resp.task_id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${resp.task_id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><h5 class="maintaskname">`+data.task_h.value+`</h5></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${resp.id}" class="maintaskdelform"><input type="number" value="${resp.id}" name="tasktodel" id="tasktodel${resp.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></div>`;
+                extdiv.className = `row homedivs taskrow-${resp.task_id} maintask-id${resp.id}`;
+                extdiv.innerHTML = `<div class="col check-comp" id="contdiv${resp.id}" style="padding: 0px ; max-width:50px;"><form id="status${resp.task_id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${resp.task_id}" name="taskid" value="${resp.task_id}"><input type="checkbox" id="task${resp.task_id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${resp.task_id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><div class="row"><div class="col"><h5 class="maintaskname">`+data.task_h.value+`</h5></div><div class="col"><span style="float:right; max-width:fit-content; color:#a31e17;"></span></div></div></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${resp.id}" class="maintaskdelform"><input type="number" value="${resp.id}" name="tasktodel" id="tasktodel${resp.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></div>`;
                 document.getElementById("mainc").append(extdiv);
 
             }
@@ -92,8 +168,12 @@
                 const formdata = new FormData(form);
 
                 XHR.addEventListener("load", function(event) {
-                    const resp = XHR.response; // response from add event
-                    dispmod(form, JSON.parse(resp));
+                    const resp = JSON.parse(XHR.response);
+                     // response from add event
+                    id = resp.id;
+                    dispmod(form,resp);
+                    const form3 = document.querySelector('#enddateform');
+                    form3.children[0].children[2].click()
                     document.getElementById("task_h").value = "";
                 })
 
@@ -102,6 +182,28 @@
                 })
 
                 XHR.open("POST", "/add_task");
+                XHR.send(formdata);
+            }
+
+            //add end date
+            function AddEndDate(form,id) {
+                const XHR = new XMLHttpRequest();
+                const formdata = new FormData(form);
+
+                XHR.addEventListener("load", function(event) {
+                    const resp = JSON.parse(XHR.response);
+                     // response from add event
+                    document.getElementById("task_h").value = "";
+                    document.getElementById("end_date").value = "";
+                    const ele = document.getElementsByClassName(`maintask-id${resp.id}`)[0].children[1].children[0].children[0].children[1].children[0];
+                    ele.innerHTML = `${resp.enddate}`;
+                })
+
+                XHR.addEventListener("error", function(event){
+                    cosnole.log(event);
+                })
+
+                XHR.open("POST", `/add_end_date/${id}`);
                 XHR.send(formdata);
             }
 
@@ -130,7 +232,7 @@
                     const pele = completetaskform.parentElement.parentElement;
                     const taskname = pele.getElementsByClassName("maintaskname")[0].innerHTML;
                     showcompletetask(taskname,completetaskform.taskid.value);
-                    pele.style.display = "none";
+                    pele.remove();
                     
                 })
 
@@ -143,9 +245,11 @@
                 
             }
 
+
             //main event linstener
             document.addEventListener('DOMContentLoaded', function () {
 
+                startTime();
                 //fetching data for existing tasks
                 fetch('/tasks')
                 .then(response => response.json())
@@ -180,7 +284,7 @@
                 document.querySelectorAll(".viewpage").forEach( viewpage => {
                     viewpage.addEventListener("click",  function(event) {
                         event.preventDefault();
-                        console.log(viewpage);
+        
                         if(viewpage.id === "pending"){
                             document.querySelectorAll(".homedivs").forEach( hidedivs => {
                                 hidedivs.style.display = "none";
@@ -196,6 +300,16 @@
                     });
                 });
                 
+                //document.querySelector('#mega-submit').onclick = () => {
+                 //   const form1 = document.querySelector('#formaddtask');
+                //    console.log(form1);
+                //    form1.submit();
+                //};
+
+                document.querySelector('#mega-submit').addEventListener("click", event => {
+                    const form1 = document.querySelector('#formaddtask');
+                    form1.children[2].click();
+                });
 
                 //For displaying add task form
                 document.querySelector('#addbtn').onclick = () => {
@@ -225,6 +339,8 @@
                         DeleteTask(element);
                     }else if (element.className === "completestatusform"){
                         CompleteTask(element);
+                    }else if(element.id === "enddateform"){
+                        AddEndDate(element,id);
                     }
                 }); 
                 
@@ -233,7 +349,7 @@
         </script>
     </head>
     <body>
-        <nav class="navbar navbar-dark bg-dark">
+        <nav class="navbar navbar-dark" style="background-color: #007bff;">
             <a class="navbar-brand mx-auto" href=#>TODO</a>  
         </nav>
         <div class="container-fluid">
@@ -268,7 +384,7 @@
                     </div>
                     <div class="col"><!--Analysis Bar-->
                         <li class="nav-item float-right">
-                            <a href="/accounts/logout" id="logout">LOGOUT</a>
+                            <a class="nav-link" href="/accounts/logout" id="logout">Logout</a>
                         </li>
                     </div>
                 </div>
@@ -311,6 +427,8 @@
                                 <div class="col float-right inputform" style="padding: 0px">
                                     <div class="row" style="width:inherit; margin:0%;">
                                         <div class="col" style="padding: 0px 5px;">
+                                            <div class="row">
+                                            <div class="col-10">
                                             <form id="formaddtask">
                                                 <div class="form-group">
                                                 <input type="text" name="task_h" class="form-control" id="task_h" placeholder="Task">
@@ -320,16 +438,17 @@
                                                 </div>
                                                 <input type="submit" id="tasksubmit" hidden>
                                             </form>
+                                            </div>
+                                            <div class="col-2">
+                                                <button type="button" id="mega-submit" style="text-align:center; border:none; width:50px; height:40px;">Add</button>
+                                            </div></div>
                                         </div>
                                     </div>
                                     <div class="row"  style="width:inherit; margin:0%;"><!--Option Bar and Subtask add and many more option-->
                                         <div class="col" style="padding: 0px 5px"><!--Option Bar-->
                                             <ul class="nav nav-tabs form-option float-right" style="border-bottom: none;">
                                                 <li class="nav-item" style="height: 26px;">
-                                                    <a class="nav-link active sublink" style="border: none; padding: 1px 8px; font-size:small;" data-sublinks="subtaskadd" role="button">Add Subtask</a>
-                                                </li>
-                                                <li class="nav-item" style="height: 26px;">
-                                                    <a class="nav-link active  sublink" style="border: none; padding: 1px 8px; font-size:small;" data-sublinks="subtaskadd" role="button">End Date</a>
+                                                    <a class="nav-link active  sublink" style="border: none; padding: 1px 8px; font-size:small;" data-sublinks="datepick" role="button">End Date</a>
                                                 </li>
                                                 <li class="nav-item" style="height: 26px;">
                                                     <a class="nav-link active  sublink" style="border: none; padding: 1px 8px; font-size:small;" data-sublinks="reminder" href="#reminder" role="button">Reminder</a>
@@ -340,11 +459,19 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="row sublink_div" id="subtaskadd" style="width:inherit; margin:0%;"><!--Subtask add Bar-->
+                                    <div class="row sublink_div" id="datepick" style="width:inherit; margin:0%;"><!--end date add Bar-->
                                         <div class="col" style="padding: 0px 5px">
-                                            <form>
+                                            <form id="enddateform">
                                                 <div class="form-group">
-                                                <input type="text" class="form-control" id="" placeholder="Sub Task">
+                                                <input type="date" class="form-control" name="end_date" id="end_date" placeholder="date">
+                                                <script>
+                                                    $(function () {
+                                                      $("#id_date").datepicker({
+                                                        format:'dd/mm/yyyy',
+                                                      });
+                                                    });
+                                                </script>
+                                                <input type="submit" hidden>
                                                 </div>
                                             </form>
                                         </div>
@@ -363,7 +490,12 @@
                 <div class="col-3"><!--Third column-->
                     <div class="row"><!--For Calender and date-->
                         <div class="col">
-                            Input Current Date and calender Here
+                            <div id="clockdate">
+                                <div class="clockdate-wrapper">
+                                  <div id="clock"></div>
+                                  <div id="date"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
