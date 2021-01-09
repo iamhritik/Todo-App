@@ -77,9 +77,8 @@ def task_add(request):
   end_date = request.data['end_date'] if request.data['end_date']!= "" else None
   add_time = timezone.now()
   complete = False
-  serializer = TodoTaskSerializer(data={'task_h':task_h,'added_date':add_time,'end_date':end_date,'complete':complete,'task_d':None})
-  if serializer.is_valid():
-    serializer.save()
+  task = todo_tasks.objects.create(task_h=task_h,end_date=end_date,added_date=add_time,complete=complete)
+  serializer = TodoTaskSerializer(task, many=False)
   return Response(serializer.data)
 
 @api_view(['POST'])

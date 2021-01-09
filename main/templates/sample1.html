@@ -106,7 +106,7 @@
             //To submit after checking task
             function checkerbox(event){
                 const targform = event.target.parentElement; 
-                targform[2].click();
+                targform[3].click();
             }
 
             function showcompletetask(name, taskid){
@@ -122,8 +122,8 @@
                     showcompletetask(data.task_h,data.id);
                 }else {
                     const newd = document.createElement('div');
-                    newd.className = `row homedivs taskrow-${data.id}`;
-                    newd.innerHTML = `<div class="col check-comp" style="padding: 0px ; max-width:50px;"><form id="status${data.id}" class="completestatusform" style="height:48px;">{%csrf_token%}<input type="hidden" id="taskid${data.id}" name="taskid" value="${data.id}"><input type="checkbox" id="task${data.id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${data.id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><div class="row"><div class="col"><h5 class="maintaskname">`+data.task_h+`</h5></div><div class="col"><span style="float:right; max-width:fit-content; color:#a31e17;">${data.end_date===null?"No End Date":data.end_date.slice(0,10)}</span></div></div></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${data.id}" class="maintaskdelform">{%csrf_token%}<input type="number" value="${data.id}" name="tasktodel" id="tasktodel${data.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></form></div>`;
+                    newd.className = `row homedivs tasks taskrow-${data.id}`;
+                    newd.innerHTML = `<div class="col check-comp" style="padding: 0px ; max-width:50px;"><form id="status${data.id}" class="completestatusform" style="height:48px;">{%csrf_token%}<input type="hidden" id="taskid${data.id}" name="taskid" value="${data.id}"><input type="checkbox" id="task${data.id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${data.id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><div class="row"><div class="col"><h5 class="maintaskname">`+data.task_h+`</h5></div><div class="col"><span style="display:none;">${data.added_date}</span><span style="float:right; max-width:fit-content; color:#a31e17;">${data.end_date===null?"No End Date":data.end_date.slice(0,10)}</span></div></div></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${data.id}" class="maintaskdelform">{%csrf_token%}<input type="number" value="${data.id}" name="tasktodel" id="tasktodel${data.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></form></div>`;
                     document.getElementById("mainc").append(newd);
                 }
             }
@@ -142,6 +142,38 @@
                 }
             }
 
+            //show pending tasks
+            function Pending_Tasks(){
+                const container_div = document.getElementById('pending_container');
+                const all_div = document.getElementsByClassName('tasks');
+                for(var ele of all_div)
+                {
+                    var spans = ele.getElementsByTagName('span');
+                    if(spans[1].innerHTML != 'No End Date'){
+                        var ele_date = (spans[1].innerHTML).slice(0,10);
+                        var current_date = new Date();
+                        if((current_date.getFullYear() > ele_date.slice(0,4)) || (current_date.getFullYear() == ele_date.slice(0,4) && (current_date.getMonth()+1) > ele_date.slice(5,7)) || (current_date.getFullYear() == ele_date.slice(0,4) && (current_date.getMonth()+1) == ele_date.slice(5,7) && current_date.getDate() > ele_date.slice(8,10)) )
+                        {
+                            ele.style.display = "flex";
+                        }
+                    }
+                }
+                
+            }
+
+            //Show tasks needed to be done by today
+            function TodayTasks(ele)
+            {
+                const cdate = new Date();
+                
+                if(ele.end_date != null && ele.end_date.slice(0,4) == cdate.getFullYear() && ele.end_date.slice(5,7)-1 == cdate.getMonth() && ele.end_date.slice(8,10) == cdate.getDate())
+                {
+                    console.log('I m in');
+                    const newelement = document.createElement('div');
+                    newelement.innerHTML = `<a class="nav-link active" href="#"><li class="list-group-item d-flex justify-content-between align-items-center">${ele.task_h}<span class="badge badge-light">${ele.complete==true?'Completed':'Pending'}</span></li></a>`;
+                    document.getElementById('left_side_container').append(newelement);        
+                }
+            }
 
             function checkboxer(){
                 if (document.getElementById("taskupp").checked == false) 
@@ -153,15 +185,6 @@
                     }
             }
 
-            //for showing new tasks
-            function dispmod(data, resp){
-                const extdiv = document.createElement('div')
-                extdiv.className = `row homedivs taskrow-${resp.task_id} maintask-id${resp.id}`;
-                extdiv.innerHTML = `<div class="col check-comp" id="contdiv${resp.id}" style="padding: 0px ; max-width:50px;"><form id="status${resp.task_id}" class="completestatusform" style="height:48px;"><input type="hidden" id="taskid${resp.task_id}" name="taskid" value="${resp.task_id}"><input type="checkbox" id="task${resp.task_id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${resp.task_id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><div class="row"><div class="col"><h5 class="maintaskname">`+data.task_h.value+`</h5></div><div class="col"><span style="float:right; max-width:fit-content; color:#a31e17;">${data.end_date.value===""?"No End Date":data.end_date.value}</span></div></div></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${resp.id}" class="maintaskdelform"><input type="number" value="${resp.id}" name="tasktodel" id="tasktodel${resp.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></div>`;
-                document.getElementById("mainc").append(extdiv);
-
-            }
-
             //for submitting new task form 
             function SubmitAddTask(form) {
                 const XHR = new XMLHttpRequest();
@@ -170,7 +193,8 @@
                 XHR.addEventListener("load", function(event) {
                     const resp = JSON.parse(XHR.response);
                     // response from add event
-                    disp(resp)
+                    disp(resp);
+                    TodayTasks(resp);
                     document.getElementById("task_h").value = "";
                     document.getElementById("end_date").value= "";
                 })
@@ -229,7 +253,8 @@
                 .then(data => {
                     data.forEach( subd => {
                         disp(subd);
-                    })
+                        TodayTasks(subd);
+                    });
                 })
             }
 
@@ -271,6 +296,7 @@
                                 hidedivs.style.display = "none";
                             });
                             document.querySelector(`#${viewpage.dataset.target}`).style.display = "block";
+                            Pending_Tasks();
                         }else if( viewpage.id === "home") {
                             const dtarget = viewpage.dataset.target
                             document.querySelector("#pendingtasks").style.display = "none";
@@ -281,11 +307,6 @@
                     });
                 });
                 
-                //document.querySelector('#mega-submit').onclick = () => {
-                 //   const form1 = document.querySelector('#formaddtask');
-                //    console.log(form1);
-                //    form1.submit();
-                //};
 
                 document.querySelector('#mega-submit').addEventListener("click", event => {
                     const form1 = document.querySelector('#formaddtask');
@@ -336,7 +357,7 @@
                 <div class="row ml-0 mr-0 w-100">
                     <div class="col">
                         <li class="nav-item float-left">
-                            <a class="nav-link viewpage" href="#" id="pending" data-target="pendingtasks" role="button">Pending <span class="badge badge-primary badge-pill">3</span></a>
+                            <a class="nav-link viewpage" href="#" id="pending" data-target="pendingtasks" role="button">Breached <span class="badge badge-primary badge-pill">3</span></a>
                           </li>
                     </div>
                     <div class="col">
@@ -350,11 +371,6 @@
                             <input type="text" id="searchinput" name="searchinput" class="form-control" placeholder="Search">
                             </form>
                         </li>
-                    </div>
-                    <div class="col">
-                          <li class="nav-item float-right">
-                            <a class="nav-link active" href="#">Breached <span class="badge badge-primary badge-pill">3</span></a>
-                          </li>
                     </div>
                     <div class="col"><!--Analysis Bar-->
                         <li class="nav-item float-right">
@@ -370,27 +386,20 @@
             </ul>
             <div class="row">
                 <div class="col-3"><!--Left Column for todays activity-->
-                    <ul class="list-group">
+                    <ul class="list-group" id="left_side_container">
                         <h5 class="text-center">Today</h3>
-                        <a class="nav-link active" href="#">
-                            <!--Use for loop here -->
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                          Cras justo odio
-                          <span class="badge badge-light">date</span>
-                        </li>
-                        </a>
-                      </ul>
+                        
+                    </ul>
                 </div>
                 <div class="col-6" id="mainc"><!--Middle Column For Adding Task and Showing Task-->
                     <div class="row pendingtasks" id="pendingtasks"><!--For Addition information-->
                         <div class="col">
                             <div class="row">
                                 <div class="col">
-                                    <h5 class="text-center">Pending Tasks</h5>
+                                    <h5 class="text-center">Tasks Exceeded End Date</h5>
                                 </div>
-                                
                             </div>
-                            <div class="row"> <!--Repeat This Col/ use for loop before this -->
+                            <div class="row" id="pending_container"> <!--Repeat This Col/ use for loop before this -->
                                 
                             </div>
                         </div>
