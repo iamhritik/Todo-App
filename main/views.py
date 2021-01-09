@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.utils import timezone
 import json
-from django.core import serializers
 from main.models import todo_tasks
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -9,6 +8,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail as sm
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import TodoTaskSerializer
 
 # Create your views here.
 """
@@ -35,38 +37,10 @@ def home(request):
 def signup(request):
   return render(request, 'signup.html', {})
 
-def tasks(request):
-  maint = todo_tasks.objects.all()
-  tasks = [{"main_id":i.id,"tasks":{"id":i.id,"task_h":i.task_h,"complete":i.complete}} for i in maint]
-  jtasks = json.dumps(tasks)
-  return HttpResponse(f'{jtasks}')
-
-
-@csrf_exempt
-def add_task(request):
-  if request.method == "POST":
-    task_h = request.POST["task_h"]
-    task_d = request.POST["task_d"]
-    content_add_time = timezone.now()
-    task = todo_tasks.objects.create(task_h=task_h,task_d=task_d,added_date=content_add_time,complete=False)
-    return JsonResponse({"id":task.id,"task_id":task.id})
-
-@csrf_exempt
-def add_end_date(request, num):
-  if request.method == "POST":
-    end_date = request.POST["end_date"]
-    maint = todo_tasks.objects.get(id=num)
-    maint.end_date = end_date
-    maint.save()
-    return JsonResponse({"id":maint.id,"enddate":maint.end_date})
-  return HttpResponseRedirect(reverse('home'))
-
-
-
 @csrf_exempt
 def del_task(request, id):
   main_task = todo_tasks.objects.get(id=id)
-  todo_tasks.objects.get(task_h=main_task).delete()
+  main_task.delete()
   return HttpResponse(b'Successful')
 
 @csrf_exempt
@@ -79,21 +53,39 @@ def complete(request, taskid):
       return HttpResponse(b'Done')
     except :
       return HttpResponse(b'Not Done')
-    """maint = Main_t.objects.get(id=mainid)
-    subt = maint.sub_t.get(id=subid)
-    if request.POST["complete_var"] == "True":
-      subt.complete = True
-      subt.save()
-      if maint.sub_t.filter(complete=False).count() == 0:
-        sm(subject = 'Task Completed !!! ',message = maint.main_t.task_h,from_email = 'ToDo-App <shahiblogs@gmail.com>',recipient_list = ['hritik.99@outlook.com','cocdrive89@gmail.com',],fail_silently=False,)
-        maint.main_t.complete = True
-        maint.main_t.save()
-        sendmail(mainid)
-        return HttpResponseRedirect(reverse('home'))
-    return HttpResponseRedirect(reverse('home')) 
-    """
 
-def sendmail(mainid):
-  maint=Main_t.objects.get(id=mainid)
-  sm(subject = 'Task Completed !!! ',message = maint.main_t.task_d,from_email = 'ToDo-App <example@gmail.com>',recipient_list = ['example@outlook.com',],fail_silently=False,)
+@api_view(['GET'])
+def apiOverview(request):
+  api_urls = {
+    'All' : '/all-tasks/',
+    'Create': '/task-add/',
+    'Update': '/edit-task/<str:id>/',
+    'Delete': '/delete-task/<str:id>/',
+  }
 
+  return Response(api_urls)
+
+@api_view(['GET'])
+def taskAll(request):
+  tasks = todo_tasks.objects.all()
+  serializer = TodoTaskSerializer(tasks, many=True)
+  return Response(serializer.data)
+
+@api_view(['POST'])
+def task_add(request):
+  task_h = request.data['task_h']
+  end_date = request.data['end_date'] if request.data['end_date']!= "" else None
+  add_time = timezone.now()
+  complete = False
+  serializer = TodoTaskSerializer(data={'task_h':task_h,'added_date':add_time,'end_date':end_date,'complete':complete,'task_d':None})
+  if serializer.is_valid():
+    serializer.save()
+  return Response(serializer.data)
+
+@api_view(['POST'])
+def task_update(request, id):
+  task = todo_tasks.objects.get(id=id)
+  serializer = TodoTaskSerializer(instance=task,data=request.data)
+  if serializer.is_valid():
+    serializer.save()
+  return Response(serializer.data)
