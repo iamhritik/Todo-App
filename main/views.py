@@ -32,7 +32,8 @@ from .serializers import TodoTaskSerializer
 
 @login_required(login_url='/signup')
 def home(request):
-  return render(request,'sample1.html')
+  owner = request.user
+  return render(request,'sample1.html' , {'sample_task_owner':owner})
 
 def signup(request):
   return render(request, 'signup.html', {})
@@ -57,27 +58,28 @@ def complete(request, taskid):
 @api_view(['GET'])
 def apiOverview(request):
   api_urls = {
-    'All' : '/all-tasks/',
+    'All' : '/task-list/',
     'Create': '/task-add/',
-    'Update': '/edit-task/<str:id>/',
-    'Delete': '/delete-task/<str:id>/',
+    'Update': '/task-update/<str:id>/',
+    'Delete': '/task-delete/<str:id>/',
   }
 
   return Response(api_urls)
 
 @api_view(['GET'])
-def taskAll(request):
-  tasks = todo_tasks.objects.all()
+def task_list(request,pk):
+  tasks = todo_tasks.objects.filter(task_owner=pk)
   serializer = TodoTaskSerializer(tasks, many=True)
   return Response(serializer.data)
 
 @api_view(['POST'])
 def task_add(request):
+  owner = request.user
   task_h = request.data['task_h']
   end_date = request.data['end_date'] if request.data['end_date']!= "" else None
   add_time = timezone.now()
   complete = False
-  task = todo_tasks.objects.create(task_h=task_h,end_date=end_date,added_date=add_time,complete=complete)
+  task = todo_tasks.objects.create(task_owner=owner,task_h=task_h,end_date=end_date,added_date=add_time,complete=complete)
   serializer = TodoTaskSerializer(task, many=False)
   return Response(serializer.data)
 
@@ -88,3 +90,11 @@ def task_update(request, id):
   if serializer.is_valid():
     serializer.save()
   return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+def task_delete(request,pk):
+  task = todo_tasks.objects.get(id=pk)
+  task.delete()
+
+  return Response("Item successfully deleted")
