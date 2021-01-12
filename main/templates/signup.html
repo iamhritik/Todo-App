@@ -6,16 +6,26 @@
     <head>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet"> 
+        <title>TODO APP</title>
         <style>
 	        body{background-color: #1F2023;}
-	        .signup{margin-top:20em;}
+	        .signup{margin-top:5em;}
 	        #link{text-decoration: none;}
 	        #img{height:3em;width:3em;}
+
+	        h1{
+	        	font-family: 'Montserrat', sans-serif;
+	        	color:#626262;
+	        	padding-bottom: 5em;
+	        }
         </style>
     </head>
 <body>
 	<div class="signup">
 		<center>
+			<h1>TODO APP</h1>
 			<a title="Google" class="socialaccount_provider google" href="/accounts/google/login/?process=login&next=%2F" id="link">
 			<img src="{% static 'main/googlesign.png'%}" id="img"/>&nbsp;SIGN IN WITH GOOGLE
 			</a>

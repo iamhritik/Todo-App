@@ -6,7 +6,8 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <!--jquery-->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
         <!-- date picker-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
@@ -72,7 +73,11 @@
 
 
 */
+
+
+
             //csrf token related function
+
             function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -107,12 +112,12 @@
                     data.forEach( subd => {
                         disp(subd);
                         TodayTasks(subd);
-                        console.log(subd);
+                        Breached_Tasks();
                     });
                 })
             }
 
-            
+
             var id;
             //clock and date
             function startTime() {
@@ -192,13 +197,13 @@
                 const container_div = document.getElementById('pending_container');
                 const all_tasks_div = document.getElementsByClassName('tasks');
                 for(var ele of all_tasks_div)
-                {
+                {            
                     var spans = ele.getElementsByTagName('span');
                     if(spans[1].innerHTML != 'No End Date'){
                         var ele_date = (spans[1].innerHTML).slice(0,10);
                         var current_date = new Date();
-                        console.log("current date is:"+current_date)
-                        console.log("ele_data is :" +ele_date)
+                        //console.log("current date is:"+current_date)
+                        //console.log("ele_data is :" +ele_date)
                         if((current_date.getFullYear() > ele_date.slice(0,4)) || (current_date.getFullYear() == ele_date.slice(0,4) && (current_date.getMonth()+1) > ele_date.slice(5,7)) || (current_date.getFullYear() == ele_date.slice(0,4) && (current_date.getMonth()+1) == ele_date.slice(5,7) && current_date.getDate() > ele_date.slice(8,10)) )
                         {
                             ele.style.display = "flex";
@@ -278,7 +283,6 @@
             function CompleteTask(completetaskform) {
                 const XHR = new XMLHttpRequest();
                 const formdata = new FormData(completetaskform);
-
                 XHR.addEventListener("load", function(event) {
                     const pele = completetaskform.parentElement.parentElement;
                     const taskname = pele.getElementsByClassName("maintaskname")[0].innerHTML;
@@ -294,8 +298,64 @@
                 XHR.open("POST", `/complete/${completetaskform.taskid.value}`);
                 XHR.send(formdata);
                 
+                
+            }
+            function setchart(labels,defaultdata){
+                var ctx = document.getElementById('myChart');
+                var myChart = new Chart(ctx, {
+                    type: 'polarArea',
+                    data: {
+                        labels:labels,
+                        datasets: [{
+                        label: '',
+                        data: defaultdata,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
             }
 
+            function Breached_Tasks(){
+                var breach = 0;
+                const container_div = document.getElementById('pending_container');
+                const all_tasks_div = document.getElementsByClassName('tasks');
+                for(var ele of all_tasks_div)
+                {            
+                    var spans = ele.getElementsByTagName('span');
+                    if(spans[1].innerHTML != 'No End Date'){
+                        var ele_date = (spans[1].innerHTML).slice(0,10);
+                        var current_date = new Date();
+                        //console.log("current date is:"+current_date)
+                        //console.log("ele_data is :" +ele_date)
+                        if((current_date.getFullYear() > ele_date.slice(0,4)) || (current_date.getFullYear() == ele_date.slice(0,4) && (current_date.getMonth()+1) > ele_date.slice(5,7)) || (current_date.getFullYear() == ele_date.slice(0,4) && (current_date.getMonth()+1) == ele_date.slice(5,7) && current_date.getDate() > ele_date.slice(8,10)) )
+                        {
+                            breach++
+                            console.log(breach)
+                            return breach;
+                        }
+                    }
+                }
+                
+            }
 
             //main event linstener
             document.addEventListener('DOMContentLoaded', function () {
@@ -333,15 +393,50 @@
                             document.querySelectorAll(".homedivs").forEach( hidedivs => {
                                 hidedivs.style.display = "none";
                             });
+                            document.querySelector(".chartmain").style.display = "none";
                             document.querySelector(`#${viewpage.dataset.target}`).style.display = "block";
                             Pending_Tasks();
                         }else if( viewpage.id === "home") {
                             const dtarget = viewpage.dataset.target
                             document.querySelector("#pendingtasks").style.display = "none";
+                            document.querySelector(".chartmain").style.display = "none";
                             document.querySelectorAll(`.${dtarget}`).forEach(dtarget => {
                                 dtarget.style.display = "flex";
                             })
                         }
+                        else if( viewpage.id === "analysis") {
+                            document.querySelectorAll(".homedivs").forEach( hidedivs => {
+                                hidedivs.style.display = "none";
+                            });
+                            document.querySelector("#pendingtasks").style.display = "none";
+                            document.querySelectorAll(`.pendingtasks`).forEach(dtarget => {
+                                dtarget.style.display = "none";
+                            })
+
+                            console.log(viewpage.dataset.target)
+                            var chartelement=document.querySelector(".chartmain")
+                            chartelement.style.display = "block";
+                            chartelement.style.cssText = "width:500px;height:200px;margin-top:3em;padding-left:7em;"
+                            var endoint = '/chartdata/'
+                            var defaultdata = []
+                            var labels = []
+                            breach_count = Breached_Tasks()
+                            fetch('/chartdata/',{
+                                method:'GET',
+                                headers:{
+                                'Content-type':'application/json',                 
+                                }
+                            })
+                            .then(resp => resp.json())
+                            .then(data => {
+                                labels = data.labels
+                                defaultdata = data.default
+                                defaultdata.unshift(breach_count)
+                                setchart(labels,defaultdata) 
+
+                            })
+                        }
+
                     });
                 });
                 
@@ -395,7 +490,7 @@
                 <div class="row ml-0 mr-0 w-100">
                     <div class="col">
                         <li class="nav-item float-left">
-                            <a class="nav-link viewpage" href="#" id="pending" data-target="pendingtasks" role="button">Breached <span class="badge badge-primary badge-pill">3</span></a>
+                            <a class="nav-link viewpage" href="#" id="pending" data-target="pendingtasks" role="button">Breached <span class="badge badge-primary badge-pill"></span></a>
                           </li>
                     </div>
                     <div class="col">
@@ -412,7 +507,7 @@
                     </div>
                     <div class="col"><!--Analysis Bar-->
                         <li class="nav-item float-right">
-                          <a class="nav-link" href="#">Analysis <img src="{% static 'main/activity.svg' %}"></a>
+                          <a class="nav-link viewpage" href="#" id="analysis" data-target="pendingtasks" role="button">Analysis <img src="{% static 'main/activity.svg' %}"></a>
                         </li>
                     </div>
                     <div class="col"><!--Logout button-->
@@ -441,6 +536,9 @@
                                 
                             </div>
                         </div>
+                    </div>
+                    <div class="chartmain">
+                        <canvas id="myChart" style="width:10px;height:10px;"></canvas>
                     </div>
                     <div class="row homedivs"><!--For Adding Task-->
                         <div class="col">
@@ -545,5 +643,6 @@
                 </div>
             </div>
         </div>
+        <canvas id="myChart" style="width:100px!important;height:100px!important;"></canvas>
     </body>
 </html>

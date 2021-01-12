@@ -30,6 +30,21 @@ from .serializers import TodoTaskSerializer
 
 """
 
+
+@api_view(['GET'])
+def chart_data(request):
+  owner = request.user
+  pending =  todo_tasks.objects.filter(task_owner=owner,complete=False).count()
+  completed = todo_tasks.objects.filter(task_owner=owner,complete=True).count()
+  labels = ['Breached','Pending', 'Completed']
+  default_items = [pending,completed]
+  data = {
+  "labels" : labels,
+  "default" : default_items,
+  }
+  return Response(data)
+
+
 @login_required(login_url='/signup')
 def home(request):
   owner = request.user
@@ -58,7 +73,7 @@ def complete(request, taskid):
 @api_view(['GET'])
 def apiOverview(request):
   api_urls = {
-    'All' : '/task-list/',
+    'All' : '/task-list/<str:pk>',
     'Create': '/task-add/',
     'Update': '/task-update/<str:id>/',
     'Delete': '/task-delete/<str:id>/',
