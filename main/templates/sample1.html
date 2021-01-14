@@ -11,10 +11,11 @@
         <!-- date picker-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
-
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"> 
         <style>
             body {
-                color:#007bff;
+                color:#007bff;            
             }
             .form-control {
                 border: none;
@@ -47,7 +48,6 @@
             }
             #clock{
                 background-color:#007bff;
-                font-family: sans-serif;
                 font-size:15px;
                 text-shadow:0px 0px 1px #fff;
                 color:#fff;
@@ -63,21 +63,16 @@
             #date {
                 letter-spacing:2px;
                 font-size:10px;
-                font-family:arial,sans-serif;
                 color:#fff;
             }
+            .sublink{
+                font-family: 'Roboto', sans-serif!important;
+                font-size:0.9em!important;
+            }
+
         </style>
         <script>
-/*          1.Load_Task_Data() :  load data from task-list url.
-            2.disp(data) : display existing tasks.
-
-
-*/
-
-
-
-            //csrf token related function
-
+            //this function is for csrf token
             function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -173,7 +168,7 @@
                 }else {
                     const new_div = document.createElement('div');
                     new_div.className = `row homedivs tasks taskrow-${data.id}`;
-                    new_div.innerHTML = `<div class="col check-comp" style="padding: 0px ; max-width:50px;"><form id="status${data.id}" class="completestatusform" style="height:48px;">{%csrf_token%}<input type="hidden" id="taskid${data.id}" name="taskid" value="${data.id}"><input type="checkbox" id="task${data.id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${data.id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><div class="row"><div class="col"><h5 class="maintaskname">`+data.task_h+`</h5></div><div class="col"><span style="display:none;">${data.added_date}</span><span style="float:right; max-width:fit-content; color:#a31e17;">${data.end_date===null?"No End Date":data.end_date.slice(0,10)}</span></div></div></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${data.id}" class="maintaskdelform">{%csrf_token%}<input type="number" value="${data.id}" name="tasktodel" id="tasktodel${data.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></form></div>`;
+                    new_div.innerHTML = `<div class="col check-comp" style="padding: 0px ; max-width:40px;"><form id="status${data.id}" class="completestatusform" style="height:48px;">{%csrf_token%}<input type="hidden" id="taskid${data.id}" name="taskid" value="${data.id}"><input type="checkbox" id="task${data.id}" onchange="checkerbox(event)" name="taskstatus" style="margin: 17.5px; width:15px; height:15px;" aria-label="Checkbox for following text input" value="True"><button type="submit" id="submitstatusbtn${data.id}" hidden></button></form></div><div class="col"><a class="nav-link active" href="#" role="button"><div class="row"><div class="col"><h5 class="maintaskname">`+data.task_h+`</h5></div><div class="col"><span style="display:none;">${data.added_date}</span><span style="float:right; max-width:fit-content; color:#a31e17;">${data.end_date===null?"No End Date":data.end_date.slice(0,10)}</span></div></div></a></div><div class="col" style="max-width: max-content; padding:0%; "><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/more-vertical.svg' %}"></button></div><div class="col" style="max-width: max-content; padding:0%;"><form id="deletemain${data.id}" class="maintaskdelform">{%csrf_token%}<input type="number" value="${data.id}" name="tasktodel" id="tasktodel${data.id}" hidden><button type="submit" class="btn" style="background-color: white;"><img src="{% static 'main/trash-2.svg' %}"></button></form></div>`;
                     document.getElementById("mainc").append(new_div);
                 }
             }
@@ -285,6 +280,7 @@
                 const formdata = new FormData(completetaskform);
                 XHR.addEventListener("load", function(event) {
                     const pele = completetaskform.parentElement.parentElement;
+                    console.log(pele)
                     const taskname = pele.getElementsByClassName("maintaskname")[0].innerHTML;
                     showcompletetask(taskname,completetaskform.taskid.value);
                     pele.remove();
@@ -300,6 +296,8 @@
                 
                 
             }
+
+            //for analysis chart 
             function setchart(labels,defaultdata){
                 var ctx = document.getElementById('myChart');
                 var myChart = new Chart(ctx, {
@@ -311,13 +309,13 @@
                         data: defaultdata,
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(48,124,255, 0.3)',
+                                'rgba(60,179,113, 0.2)',
                             ],
                             borderColor: [
                                 'rgba(255, 99, 132, 1)',
                                 'rgba(54, 162, 235, 1)',
-                                'rgba(75, 192, 192, 1)',
+                                'rgba(60,179,113, 1)',
                             ],
                             borderWidth: 1
                         }]
@@ -333,7 +331,7 @@
                     }
                 });
             }
-
+            //count breahced tasks
             function Breached_Tasks(){
                 var breach = 0;
                 const container_div = document.getElementById('pending_container');
@@ -350,11 +348,10 @@
                         {
                             breach++
                             console.log(breach)
-                            return breach;
                         }
                     }
                 }
-                
+                return breach;
             }
 
             //main event linstener
@@ -406,10 +403,9 @@
                         }
                         else if( viewpage.id === "analysis") {
                             document.querySelectorAll(".homedivs").forEach( hidedivs => {
-                                hidedivs.style.display = "none";
-                            });
+                                hidedivs.style.display = "none";});
                             document.querySelector("#pendingtasks").style.display = "none";
-                            document.querySelectorAll(`.pendingtasks`).forEach(dtarget => {
+                            document.querySelectorAll('.pendingtasks').forEach(dtarget => {
                                 dtarget.style.display = "none";
                             })
 
@@ -486,7 +482,7 @@
             <a class="navbar-brand mx-auto" href=#>TODO</a>  
         </nav>
         <div class="container-fluid">
-            <ul class="nav">
+            <ul class="nav" style="font-family: 'Poppins', sans-serif;">
                 <div class="row ml-0 mr-0 w-100">
                     <div class="col">
                         <li class="nav-item float-left">
@@ -495,7 +491,7 @@
                     </div>
                     <div class="col">
                           <li class="nav-item float-left">
-                            <a class="nav-link viewpage" href="#" id="home" id="home" data-target="homedivs" role="button">Home <img src="{% static 'main/home-outline.svg' %}" style="widows: 24px; height:24px;"></a>
+                            <a class="nav-link viewpage" href="#" id="home" id="home" data-target="homedivs" role="button">Home <img src="{% static 'main/home-outline.svg' %}" style="width: 20px; height:20px;"></a>
                           </li>
                     </div>
                     <div class="col-4">
@@ -507,7 +503,7 @@
                     </div>
                     <div class="col"><!--Analysis Bar-->
                         <li class="nav-item float-right">
-                          <a class="nav-link viewpage" href="#" id="analysis" data-target="pendingtasks" role="button">Analysis <img src="{% static 'main/activity.svg' %}"></a>
+                          <a class="nav-link viewpage" href="#" id="analysis" data-target="pendingtasks" role="button">Analysis <img src="{% static 'main/activity.svg' %}" style="width:15px;height:15px;"></a>
                         </li>
                     </div>
                     <div class="col"><!--Logout button-->
